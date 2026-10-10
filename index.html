@@ -1,0 +1,1865 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Masala Rush</title>
+<meta name="description" content="A cute Indian cooking game: fry samosas in Mumbai, flip dosas in Chennai and fire up a Delhi tandoor.">
+<meta name="theme-color" content="#0e7c7b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Masala Rush">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png">
+<style>
+@font-face{font-family:'Baloo 2';font-style:normal;font-display:swap;font-weight:400 800;src:url(fonts/baloo-2-latin-wght-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Baloo 2';font-style:normal;font-display:swap;font-weight:400 800;src:url(fonts/baloo-2-latin-ext-wght-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Baloo 2';font-style:normal;font-display:swap;font-weight:400 800;src:url(fonts/baloo-2-devanagari-wght-normal.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}
+@font-face{font-family:'Baloo Thambi 2';font-style:normal;font-display:swap;font-weight:400 800;src:url(fonts/baloo-thambi-2-latin-wght-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Baloo Thambi 2';font-style:normal;font-display:swap;font-weight:400 800;src:url(fonts/baloo-thambi-2-tamil-wght-normal.woff2) format('woff2');unicode-range:U+0964-0965,U+0B82-0BFA,U+200C-200D,U+20B9,U+25CC}
+.a2hs{position:absolute;left:16px;right:16px;bottom:14px;z-index:10;display:flex;align-items:center;gap:10px;background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:0 4px 0 var(--ink);padding:10px 10px 8px 14px;font-weight:700;font-size:15px;line-height:1.3;text-align:left}
+.a2hs span{flex:1}
+.a2hs svg{display:inline-block;width:16px;height:16px;vertical-align:-2px}
+.a2hs .x{appearance:none;border:0;background:var(--card-2);width:32px;height:32px;border-radius:10px;font-size:18px;font-weight:800;flex:none}
+.a2hs .go{appearance:none;border:2.5px solid var(--ink);background:var(--saffron);border-radius:12px;font-weight:800;font-size:15px;padding:6px 12px 4px;flex:none}
+.land .a2hs{left:auto;width:360px}
+
+:root{
+  /* Layout: one 400-wide game stage scaled to the phone. Menus = peacock kolam ground + festival bunting;
+     game = customer scene / serving counter / kitchen stations / pantry, top to bottom. */
+  --ink:#3b1f1a;
+  --peacock:#0e7c7b;
+  --peacock-deep:#095857;
+  --saffron:#ff9f1c;
+  --rani:#e8467c;
+  --marigold:#ffd23f;
+  --leaf:#3e9b4f;
+  --card:#fff7ec;
+  --card-2:#ffe9cf;
+  --muted:#80594c;
+  --good:#2fb36b;
+  --warn:#ffb020;
+  --bad:#e63946;
+  --display:'Baloo 2','Baloo Thambi 2',ui-rounded,'Arial Rounded MT Bold','Trebuchet MS',system-ui,sans-serif;
+  --tamil:'Baloo Thambi 2','Baloo 2',system-ui,sans-serif;
+  color-scheme: light;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+body{margin:0;background:var(--peacock-deep);color:var(--ink);font-family:var(--display);
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation;-webkit-text-size-adjust:100%}
+button{font-family:inherit;color:inherit;touch-action:manipulation}
+button:focus-visible{outline:3px solid var(--marigold);outline-offset:2px}
+svg{display:block;overflow:visible}
+
+#app{position:fixed;left:env(safe-area-inset-left,0px);right:env(safe-area-inset-right,0px);top:env(safe-area-inset-top,0px);bottom:env(safe-area-inset-bottom,0px);overflow:hidden;
+  background-color:var(--peacock);
+  background-image:
+    radial-gradient(circle at 50% 50%,rgba(255,255,255,.22) 0 2px,transparent 2.6px),
+    radial-gradient(circle at 0 0,rgba(255,255,255,.12) 0 2px,transparent 2.6px);
+  background-size:26px 26px,26px 26px}
+#stage{position:absolute;top:0;left:0;width:400px;transform-origin:0 0}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden}
+
+/* ---------- shared UI ---------- */
+.btn{appearance:none;border:3px solid var(--ink);background:var(--saffron);color:var(--ink);font-weight:800;font-size:21px;
+  line-height:1;padding:14px 26px 12px;border-radius:18px;box-shadow:0 5px 0 var(--ink);cursor:pointer;letter-spacing:.2px}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
+.btn.big{font-size:30px;padding:16px 54px 12px;border-radius:22px}
+.btn.alt{background:#fff}
+.btn.pink{background:var(--rani);color:#fff}
+.btn.green{background:var(--good);color:#fff}
+.btn[disabled]{background:#d9c9bd;color:#8f7a70;box-shadow:0 5px 0 #8f7a70;border-color:#8f7a70}
+.chip{appearance:none;border:2.5px solid var(--ink);background:#fff;font-weight:700;font-size:14px;padding:6px 14px 4px;border-radius:999px;box-shadow:0 3px 0 var(--ink)}
+.chip:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.chip.off{background:#e5d8cf;color:#7a6259}
+.iconbtn{appearance:none;width:44px;height:44px;border-radius:14px;border:3px solid var(--ink);background:#fff;font-size:28px;font-weight:800;line-height:1;
+  box-shadow:0 4px 0 var(--ink);display:grid;place-items:center;padding:0 0 3px}
+.iconbtn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.wallet{display:flex;align-items:center;gap:6px;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:3px 12px 1px 4px;font-weight:800;font-size:18px;box-shadow:0 3px 0 var(--ink);font-variant-numeric:tabular-nums}
+.coin{width:24px;height:24px;flex:none}
+
+.menu{color:var(--ink)}
+.bunting{height:58px;flex:none}
+.mbar{display:flex;align-items:center;gap:10px;padding:10px 14px 8px;flex:none}
+.mbar h2{flex:1;margin:0;font-size:22px;line-height:1.1;color:#fff;text-shadow:0 2px 0 var(--ink);text-wrap:balance}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 16px 28px}
+
+/* title */
+.title-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:0 20px 24px;text-align:center}
+.logo{display:flex;flex-direction:column;align-items:center;line-height:.82;transform:rotate(-4deg)}
+.logo .l1,.logo .l2{font-weight:800;font-size:76px;letter-spacing:-1px;-webkit-text-stroke:3px var(--ink);paint-order:stroke fill;text-shadow:0 6px 0 var(--ink)}
+.logo .l1{color:var(--marigold)}
+.logo .l2{color:var(--rani);margin-left:40px}
+.logo .deva{margin-top:12px;font-weight:700;font-size:20px;color:#fff;background:var(--ink);padding:6px 14px 2px;border-radius:10px;line-height:1.2}
+.chef-hero{width:150px;height:218px;animation:bob 2.4s ease-in-out infinite}
+.chef-hero svg,.chefmini svg{width:100%;height:100%}
+@keyframes bob{50%{transform:translateY(-6px) rotate(1.5deg)}}
+.trow{display:flex;gap:10px;justify-content:center}
+.foot{margin:2px 0 0;max-width:30ch;color:#e6fffb;font-size:15px;line-height:1.35;font-weight:600}
+
+/* map */
+.rcard{position:relative;background:var(--card);border:3px solid var(--ink);border-radius:22px;box-shadow:0 6px 0 var(--ink);overflow:hidden;margin-bottom:18px;width:100%;text-align:left;padding:0;display:block}
+.rcard:active{transform:translateY(3px);box-shadow:0 3px 0 var(--ink)}
+.rcard .art{height:132px;border-bottom:3px solid var(--ink);overflow:hidden;position:relative}
+.rcard .art svg{width:100%;height:100%}
+.rcard .meta{padding:10px 14px 12px;display:flex;align-items:center;gap:10px}
+.rcard .meta div{flex:1;min-width:0}
+.rcard h3{margin:0;font-size:21px;line-height:1.05}
+.rcard p{margin:2px 0 0;font-size:14px;color:var(--muted);line-height:1.25;font-weight:600}
+.rcard .stars{font-weight:800;font-size:16px;white-space:nowrap;display:flex;align-items:center;gap:3px;font-variant-numeric:tabular-nums}
+.rcard.locked .art{filter:grayscale(1) brightness(.75)}
+.rcard .lock{position:absolute;left:50%;top:66px;transform:translate(-50%,-50%);background:var(--ink);color:#fff;font-weight:700;font-size:14px;padding:6px 12px 3px;border-radius:12px;white-space:nowrap}
+.city{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:#fff;background:var(--rani);border-radius:6px;padding:2px 7px 0;margin-bottom:3px}
+
+/* levels */
+.lv-hero{height:168px;border:3px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:0 6px 0 var(--ink);margin:4px 0 18px;position:relative;background:#fff}
+.lv-hero svg{width:100%;height:100%}
+.lv-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+.lvb{appearance:none;aspect-ratio:1/1.08;max-width:100%;border:3px solid var(--ink);border-radius:18px;background:#fff;box-shadow:0 5px 0 var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 0 2px}
+.lvb:active{transform:translateY(3px);box-shadow:0 2px 0 var(--ink)}
+.lvb .d{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;line-height:1}
+.lvb .n{font-size:28px;font-weight:800;line-height:1}
+.lvb .s{display:flex;gap:1px}
+.lvb .s svg{width:15px;height:15px}
+.lvb.cur{background:var(--marigold);animation:nudge 1.6s ease-in-out infinite}
+.lvb.locked{background:#e8dcd2;color:#9c857a;box-shadow:0 5px 0 #9c857a;border-color:#9c857a}
+@keyframes nudge{50%{transform:translateY(-3px)}}
+.lv-actions{display:flex;justify-content:center}
+
+/* shop */
+.shop-sec{color:#fff;font-size:15px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin:16px 2px 8px;text-shadow:0 2px 0 var(--ink)}
+.srow{display:flex;align-items:center;gap:12px;background:var(--card);border:3px solid var(--ink);border-radius:18px;padding:10px 10px 10px 8px;box-shadow:0 4px 0 var(--ink);margin-bottom:12px}
+.srow .ic{width:58px;height:58px;flex:none;border-radius:14px;background:var(--card-2);border:2.5px solid var(--ink);display:grid;place-items:center;padding:4px}
+.srow .ic svg{width:100%;height:100%}
+.srow .tx{flex:1;min-width:0}
+.srow h4{margin:0;font-size:17px;line-height:1.1}
+.srow p{margin:2px 0 0;font-size:13px;color:var(--muted);font-weight:600;line-height:1.25}
+.pips{display:flex;gap:4px;margin-top:5px}
+.pips i{width:16px;height:7px;border-radius:4px;background:#e2d2c6;border:1.5px solid var(--ink)}
+.pips i.on{background:var(--good)}
+.buy{appearance:none;border:3px solid var(--ink);background:var(--marigold);border-radius:14px;font-weight:800;font-size:16px;padding:8px 10px 5px;min-width:78px;box-shadow:0 3px 0 var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.buy:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.buy[disabled]{background:#eadfd6;color:#a08c82;border-color:#a08c82;box-shadow:0 3px 0 #a08c82}
+.buy.max{background:var(--good);color:#fff}
+
+/* ---------- game ---------- */
+#scr-game{background:#222}
+.hud{flex:none;height:54px;display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--ink);color:#fff;position:relative;z-index:5}
+.hud .iconbtn{width:40px;height:40px;font-size:18px;box-shadow:0 3px 0 #000;border-color:#000}
+.earn{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.earn .top{display:flex;align-items:center;gap:6px;font-weight:800;font-size:20px;line-height:1;font-variant-numeric:tabular-nums}
+.earn .top .coin{width:22px;height:22px}
+.earn .goal{font-size:12px;font-weight:600;color:#ffd9b0;margin-left:auto;padding-right:2px}
+.bar{position:relative;height:12px;border-radius:8px;background:#5d3a32;border:2px solid #000}
+.bar .fill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:6px;background:linear-gradient(90deg,var(--saffron),var(--marigold));transition:width .35s}
+.bar .st{position:absolute;top:50%;width:18px;height:18px;transform:translate(-50%,-50%);filter:grayscale(1) brightness(.7)}
+.bar .st.on{filter:none;animation:pop .5s}
+.bar .st svg{width:100%;height:100%}
+.dayinfo{text-align:right;line-height:1.05;flex:none}
+.dayinfo b{display:block;font-size:16px}
+.dayinfo span{font-size:13px;color:#ffd9b0;font-weight:600;font-variant-numeric:tabular-nums}
+
+.scene{position:relative;flex:1 1 auto;min-height:196px;overflow:hidden}
+.backdrop,.backdrop svg{position:absolute;inset:0;width:100%;height:100%}
+.seats{position:absolute;left:0;right:0;bottom:0;height:100%}
+.seat{position:absolute;bottom:-6px;width:25%;height:100%}
+.cust{position:absolute;left:0;right:0;bottom:0;height:100%;transition:transform .6s cubic-bezier(.3,1.3,.5,1),opacity .5s}
+.cust.enter{transform:translateX(-140px);opacity:0}
+.cust.leave{transform:translateX(160px);opacity:0;transition:transform .9s ease-in,opacity .9s ease-in}
+.cust .body{position:absolute;left:calc(50% - 42px);bottom:0;width:84px;height:101px;transform-origin:50% 100%}
+.cust.kid .body{transform:scale(.84)}
+.cust .body svg{width:100%;height:100%}
+.cust.wait .body{animation:idle 2.2s ease-in-out infinite}
+@keyframes idle{50%{transform:translateY(-2px)}}
+.cust.kid.wait .body{animation:idlek 2s ease-in-out infinite}
+@keyframes idlek{0%,100%{transform:scale(.84)}50%{transform:scale(.84) translateY(-3px)}}
+.bubble{position:absolute;left:50%;bottom:104px;transform:translateX(-50%);width:max-content;max-width:98px;background:#fff;border:3px solid var(--ink);border-radius:16px;padding:4px 4px 6px;box-shadow:0 3px 0 rgba(59,31,26,.5);min-width:58px}
+.cust.kid .bubble{bottom:90px}
+.bubble:after{content:"";position:absolute;left:50%;bottom:-11px;width:14px;height:14px;background:#fff;border-right:3px solid var(--ink);border-bottom:3px solid var(--ink);transform:translateX(-50%) rotate(45deg)}
+.order{display:flex;flex-wrap:wrap;justify-content:center;gap:2px;max-width:84px}
+.oi{position:relative;width:40px;height:40px}
+.order.n2 .oi{width:38px;height:38px}
+.order.n3 .oi{width:36px;height:36px}
+.oi svg{width:100%;height:100%}
+.oi.done svg{opacity:.28}
+.oi.done:after{content:"";position:absolute;inset:6px;background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11' fill='%232fb36b' stroke='%233b1f1a' stroke-width='2'/%3E%3Cpath d='M6.5 12.5l3.5 3.5 7-8' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+.pbar{position:relative;z-index:1;height:8px;border-radius:5px;background:#eadfd6;border:2px solid var(--ink);margin:3px 3px 0;overflow:hidden}
+.pbar i{position:absolute;inset:0;transform-origin:0 50%;background:var(--good);border-radius:3px}
+.pbar.mid i{background:var(--warn)}
+.pbar.low i{background:var(--bad)}
+.say{position:absolute;left:50%;bottom:118px;transform:translateX(-50%);white-space:nowrap;background:var(--ink);color:#fff;font-weight:700;font-size:13px;padding:4px 9px 2px;border-radius:10px;animation:sayin 1.6s ease-out forwards;z-index:3}
+@keyframes sayin{0%{opacity:0;transform:translate(-50%,6px)}15%{opacity:1;transform:translate(-50%,0)}80%{opacity:1}100%{opacity:0}}
+.cust.joy .bubble,.cust.mad .bubble{opacity:0;transition:opacity .25s}
+
+.counter{flex:none;height:86px;position:relative;z-index:2;border-top:4px solid var(--ink);border-bottom:4px solid var(--ink)}
+.r-mumbai .counter{background:linear-gradient(#e9eef1 0 16px,#9aa7b0 16px 19px,#2f6f9f 19px)}
+.r-chennai .counter{background:linear-gradient(#41675c 0 16px,#20352f 16px 19px,#9b5a32 19px),#9b5a32}
+.r-delhi .counter{background:linear-gradient(#e2b04a 0 6px,#5a2c1d 6px 16px,#e2b04a 16px 19px,#6d3622 19px)}
+.counter:after{content:"";position:absolute;inset:19px 0 0;pointer-events:none;background:repeating-linear-gradient(90deg,transparent 0 48px,rgba(0,0,0,.12) 48px 50px)}
+.plates{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;gap:6px;padding:4px 6px 0;z-index:1}
+.plate{position:relative;width:74px;height:74px;flex:none;border-radius:50%}
+.plate svg{width:100%;height:100%}
+.plate.sel:before{content:"";position:absolute;inset:-4px;border-radius:50%;border:3px dashed var(--rani);animation:spin 6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.plate.match svg{filter:drop-shadow(0 0 5px #fff36b) drop-shadow(0 0 2px #fff36b)}
+
+.hint{flex:none;position:relative;z-index:3;background:var(--marigold);border-bottom:3px solid var(--ink);font-weight:700;font-size:15px;line-height:1.15;padding:6px 12px 4px;text-align:center;min-height:30px}
+.kitchen{flex:none;position:relative;padding:8px 4px 10px;display:flex;flex-direction:column;gap:8px}
+.r-mumbai{--kbg:linear-gradient(rgba(255,255,255,.08),rgba(0,0,0,.08)),repeating-linear-gradient(90deg,#b9c4cb 0 3px,#aab6be 3px 6px)}
+.r-chennai{--kbg:conic-gradient(from 45deg,#d2492a 0 25%,#f3d27a 0 50%,#1d8a7e 0 75%,#f3d27a 0) 0 0/44px 44px,#f3d27a}
+.r-delhi{--kbg:repeating-linear-gradient(0deg,#6b3420 0 22px,#5a2b1a 22px 24px),#6b3420}
+.kitchen{background:var(--kbg)}
+.stations{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.station{position:relative;background:rgba(255,248,236,.92);border:3px solid var(--ink);border-radius:16px;padding:16px 5px 5px;box-shadow:0 3px 0 rgba(0,0,0,.45)}
+.station .lbl{position:absolute;top:-2px;left:50%;transform:translate(-50%,-50%);background:var(--ink);color:#fff;font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;padding:3px 8px 1px;border-radius:8px;white-space:nowrap}
+.slots{display:flex;gap:4px}
+.slot{position:relative;width:58px;height:58px;border-radius:14px}
+.slot svg.v{position:absolute;inset:0;width:100%;height:100%}
+.ring{position:absolute;left:-3px;top:-3px;width:calc(100% + 6px);height:calc(100% + 6px);transform:rotate(-90deg);pointer-events:none}
+.ring circle{fill:none;stroke-width:5;stroke-linecap:round}
+.ring .bg{stroke:rgba(59,31,26,.2);opacity:0}
+.ring .fg{stroke:var(--saffron);opacity:0}
+.slot.cook .ring .fg,.slot.ready .ring .fg{opacity:1}
+.slot.cook .ring .bg,.slot.ready .ring .bg{opacity:1}
+.slot.ready .ring .fg{stroke:var(--good)}
+.slot.ready.amber .ring .fg{stroke:var(--warn)}
+.slot.ready.warn .ring .fg{stroke:var(--bad)}
+.slot.ready.warn{animation:alarm .5s ease-in-out infinite}
+@keyframes alarm{50%{transform:scale(1.07)}}
+.slot.ready svg.v{animation:pop .45s ease-out}
+.slot .pf{position:absolute;border-radius:50%;opacity:0;pointer-events:none}
+.p1{left:28%;top:52%}.p2{left:62%;top:58%}.p3{left:46%;top:36%}
+.slot.cook.fry .pf,.slot.ready.fry .pf{width:6px;height:6px;background:rgba(255,255,255,.85);animation:bub .9s infinite}
+.slot.cook.fry .p2{animation-delay:.3s}.slot.cook.fry .p3{animation-delay:.6s}
+.slot.ready.fry .p2{animation-delay:.45s}.slot.ready.fry .p3{animation-delay:.2s}
+@keyframes bub{0%{transform:scale(.3);opacity:0}30%{opacity:.9}100%{transform:scale(1.5);opacity:0}}
+.slot.cook.steamy .pf,.slot.ready.steamy .pf{width:12px;height:12px;top:4%;background:rgba(255,255,255,.85);animation:steam 1.5s infinite}
+.slot.cook.steamy .p2,.slot.ready.steamy .p2{animation-delay:.5s}.slot.cook.steamy .p3,.slot.ready.steamy .p3{animation-delay:1s}
+@keyframes steam{0%{transform:translateY(8px) scale(.4);opacity:0}30%{opacity:.85}100%{transform:translateY(-24px) scale(1.5);opacity:0}}
+.slot.burnt .pf{width:16px;height:16px;top:0;background:rgba(60,52,52,.6);animation:smoke 1.6s infinite}
+.slot.burnt .p2{animation-delay:.55s}.slot.burnt .p3{animation-delay:1.1s}
+@keyframes smoke{0%{transform:translateY(10px) scale(.5);opacity:0}25%{opacity:.8}100%{transform:translateY(-30px) scale(1.8);opacity:0}}
+.slot.cook.v-blender svg.v{animation:buzz .12s linear infinite}
+@keyframes buzz{50%{transform:translateX(1px) rotate(1deg)}}
+
+.pantry{display:flex;flex-wrap:wrap;justify-content:center;gap:3px}
+.tile{position:relative;width:46px;display:flex;flex-direction:column;align-items:center;gap:1px}
+.tile .box{width:46px;height:46px;border-radius:12px;background:rgba(255,250,242,.95);border:2.5px solid var(--ink);padding:3px;box-shadow:0 3px 0 rgba(0,0,0,.45)}
+.tile .box svg{width:100%;height:100%}
+.tile:active .box{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.45)}
+.tile .nm{font-size:10px;font-weight:800;line-height:1.05;text-align:center;color:#fff;text-shadow:0 1px 0 #000,0 0 3px #000;max-width:50px;min-height:11px}
+.tile.trash .box{background:#d8e0e5}
+#scr-game.trashing .tile.trash .box{background:var(--bad);animation:alarm .6s infinite}
+#scr-game.trashing .plate,#scr-game.trashing .slot{cursor:crosshair}
+#scr-game.trashing .plates .plate:not(.empty) svg,#scr-game.trashing .slot.has svg.v{filter:drop-shadow(0 0 4px var(--bad))}
+
+.pulse{animation:hintpulse 1s ease-in-out infinite!important;z-index:4}
+@keyframes hintpulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 0 #fff36b)}50%{transform:scale(1.1);filter:drop-shadow(0 0 8px #fff36b) drop-shadow(0 0 3px #fff)}}
+.shake{animation:shake .35s!important}
+@keyframes shake{20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+@keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+
+#fx{position:absolute;inset:0;pointer-events:none;z-index:40;overflow:hidden}
+.fly{position:absolute;pointer-events:none}
+.fly svg{width:100%;height:100%}
+.float{position:absolute;transform:translate(-50%,0);font-weight:800;font-size:22px;color:var(--marigold);-webkit-text-stroke:2.5px var(--ink);paint-order:stroke fill;white-space:nowrap;animation:floatup 1.3s ease-out forwards}
+.float.small{font-size:14px;color:#fff;-webkit-text-stroke:0;background:var(--ink);padding:4px 9px 2px;border-radius:10px;animation-duration:1.4s}
+.float.tip{font-size:15px;color:#fff;-webkit-text-stroke:0;background:var(--rani);padding:3px 8px 1px;border-radius:9px}
+@keyframes floatup{0%{opacity:0;transform:translate(-50%,8px) scale(.8)}15%{opacity:1;transform:translate(-50%,0) scale(1.05)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-34px)}}
+.heart{position:absolute;width:18px;height:18px;animation:heart 1.1s ease-out forwards}
+@keyframes heart{0%{opacity:0;transform:translateY(0) scale(.4)}20%{opacity:1}100%{opacity:0;transform:translateY(-46px) scale(1.2)}}
+
+/* modal */
+#modal{position:absolute;inset:0;z-index:60;background:rgba(30,12,10,.62);display:flex;align-items:center;justify-content:center;padding:16px}
+.sheet{width:100%;max-width:368px;max-height:100%;overflow-y:auto;background:var(--card);border:3px solid var(--ink);border-radius:24px;box-shadow:0 7px 0 var(--ink);padding:18px 18px 20px;text-align:center;animation:pop .35s ease-out}
+.sheet h2{margin:0;font-size:28px;line-height:1.05;text-wrap:balance}
+.sheet .sub{margin:4px 0 0;color:var(--muted);font-weight:700;font-size:15px}
+.sheet .goalrow{display:flex;justify-content:center;gap:8px;margin:14px 0 4px}
+.goalrow div{flex:1;background:#fff;border:2.5px solid var(--ink);border-radius:14px;padding:6px 2px 4px}
+.goalrow svg{width:22px;height:22px}
+.goalrow .gs{display:flex;justify-content:center;gap:0}
+.goalrow b{display:block;font-size:17px;font-variant-numeric:tabular-nums;margin-top:2px}
+.newcard{display:flex;gap:12px;align-items:center;text-align:left;background:#fff;border:2.5px solid var(--ink);border-radius:16px;padding:10px;margin-top:10px}
+.newcard .art{width:64px;height:64px;flex:none}
+.newcard .art svg{width:100%;height:100%}
+.newcard h4{margin:0;font-size:18px;line-height:1.1}
+.newcard h4 em{font-style:normal;font-size:11px;font-weight:800;letter-spacing:.8px;background:var(--rani);color:#fff;border-radius:6px;padding:2px 6px 0;margin-right:6px;vertical-align:2px}
+.newcard p{margin:3px 0 0;font-size:14px;line-height:1.3;color:#5c4036;font-weight:600}
+.sheet .acts{display:flex;flex-direction:column;gap:12px;margin-top:18px;align-items:stretch}
+.sheet .acts.row{flex-direction:row}
+.sheet .acts.row .btn{flex:1;padding-left:8px;padding-right:8px;font-size:18px}
+.bigstars{display:flex;justify-content:center;gap:6px;margin:12px 0 4px}
+.bigstars .st{width:62px;height:62px;display:block}
+.bigstars .st svg{width:100%;height:100%}
+.bigstars .s2{transform:translateY(-10px);width:76px;height:76px}
+.bigstars .st{opacity:.25;filter:grayscale(1)}
+.bigstars .st.on{opacity:1;filter:none;animation:starin .5s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes starin{0%{transform:scale(0) rotate(-40deg)}100%{transform:scale(1)}}
+.bigstars .s2.on{animation-name:starin2}
+@keyframes starin2{0%{transform:translateY(-10px) scale(0) rotate(-40deg)}100%{transform:translateY(-10px) scale(1)}}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;text-align:left}
+.stats div{background:#fff;border:2px solid var(--ink);border-radius:12px;padding:6px 10px 4px;font-size:13px;font-weight:700;color:var(--muted)}
+.stats b{display:block;font-size:20px;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.1}
+.earned{font-size:40px;font-weight:800;line-height:1;margin-top:6px;font-variant-numeric:tabular-nums}
+.chefmini{width:96px;height:112px;margin:0 auto -6px}
+.toggles{display:flex;gap:10px;justify-content:center;margin-top:14px}
+.trow{flex-wrap:wrap}
+.code{display:block;width:100%;height:76px;margin-top:10px;resize:none;font:12px/1.35 ui-monospace,Menlo,monospace;color:var(--ink);background:#fff;border:2.5px solid var(--ink);border-radius:12px;padding:8px 10px;-webkit-user-select:text;user-select:text;word-break:break-all}
+.code:focus{outline:3px solid var(--marigold);outline-offset:1px}
+.sheet .lbl2{display:block;text-align:left;font-weight:800;font-size:15px;margin-top:16px}
+.msg{min-height:20px;margin:8px 0 0;font-weight:700;font-size:14px;color:var(--muted)}
+.msg.bad{color:var(--bad)}.msg.ok{color:#1f8a52}
+
+.bunting svg{width:100%;height:100%}
+/* ---------- landscape (phones on their side, iPad landscape) ---------- */
+.land .scroll{padding-inline:max(16px,calc((100% - 760px) / 2))}
+.land .mbar{padding-inline:max(14px,calc((100% - 790px) / 2))}
+.land .bunting{height:46px}
+.land .title-wrap{display:grid;grid-template-columns:auto auto;column-gap:48px;row-gap:12px;align-content:center;justify-content:center;justify-items:center;padding-bottom:16px}
+.land .chef-hero{grid-column:1;grid-row:1 / 5;width:160px;height:232px}
+.land .logo,.land #btn-play,.land .trow,.land .foot{grid-column:2}
+.land .logo .l1,.land .logo .l2{font-size:62px}
+.land #scr-map .scroll{padding-inline:max(16px,calc((100% - 980px) / 2))}
+.land #rest-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
+.land .rcard{margin-bottom:6px}
+.land .rcard .art{height:118px}
+.land .rcard .lock{top:59px;white-space:normal;text-align:center;width:86%}
+.land .rcard .meta{flex-wrap:wrap}
+.land .lv-body{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.land .lv-hero{margin:4px 0 0;height:190px}
+.land .lv-grid{margin:4px 0 16px}
+.land .hud{height:50px}
+.land .scene{min-height:112px}
+.land .cust .body{left:calc(50% - 94px)}
+.land .bubble,.land .cust.kid .bubble{left:calc(50% - 4px);bottom:18px;transform:none}
+.land .bubble:after{left:-10px;top:50%;bottom:auto;transform:translateY(-50%) rotate(135deg)}
+.land .say{left:calc(50% + 46px);bottom:64px}
+.land .counter{height:84px}
+.land .kitchen{padding:6px 8px 8px;gap:6px}
+.land .stations{gap:10px}
+.land .pantry{gap:4px}
+.land .sheet{max-width:600px;padding:14px 18px 16px}
+.land .chefmini{display:none}
+.land .stats{grid-template-columns:repeat(4,1fr)}
+.land .bigstars{margin:6px 0 0}
+.land .bigstars .st{width:50px;height:50px}
+.land .bigstars .s2{width:60px;height:60px}
+.land .newcard{margin-top:8px;padding:8px}
+.land .sheet .acts{margin-top:12px}
+.land .sheet .acts.shopact{margin-top:10px!important}
+.land .goalrow{margin:10px 0 2px}
+
+/* ---------- phone held sideways: stations under the left thumb, pantry under the right ---------- */
+.thumb #scr-game{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto auto minmax(0,1fr) auto;
+  grid-template-areas:"hud hud hud" "st hint pa" "st scene pa" "st counter pa"}
+.thumb .hud{grid-area:hud;height:44px;padding:4px 10px}
+.thumb .hud .iconbtn{width:34px;height:34px}
+.thumb .kitchen{display:contents}
+.thumb .hint{grid-area:hint;font-size:14px;min-height:26px;padding:4px 10px 2px}
+.thumb .scene{grid-area:scene;min-height:0}
+.thumb .counter{grid-area:counter;height:84px;border-bottom:0}
+.thumb .stations,.thumb .pantry{background:var(--kbg);position:relative;z-index:3}
+.thumb .stations{grid-area:st;flex-direction:column;flex-wrap:nowrap;justify-content:flex-end;align-items:center;gap:14px;padding:16px 12px 14px;border-right:4px solid var(--ink)}
+.thumb .pantry{grid-area:pa;display:grid;grid-template-columns:repeat(var(--pc,3),60px);align-content:end;justify-content:center;gap:6px 7px;padding:10px 12px 14px;border-left:4px solid var(--ink)}
+.thumb .slot{width:60px;height:60px}
+.thumb .tile{width:60px}
+.thumb .tile .box{width:60px;height:60px;border-radius:14px;padding:4px}
+.thumb .tile .nm{font-size:11px;max-width:62px}
+.thumb .plates{gap:8px}
+.thumb .plate{flex:0 1 74px;width:auto;height:auto;aspect-ratio:1/1;max-height:74px}
+.thumb .cust .body{left:calc(50% - 42px)}
+.thumb .bubble,.thumb .cust.kid .bubble{left:50%;bottom:104px;transform:translateX(-50%)}
+.thumb .cust.kid .bubble{bottom:90px}
+.thumb .bubble:after{left:50%;top:auto;bottom:-11px;transform:translateX(-50%) rotate(45deg)}
+.thumb .say{left:50%;bottom:118px}
+
+@media (prefers-reduced-motion: reduce){
+  *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+
+<svg id="defs" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+  <defs>
+    <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd76e"/><stop offset="1" stop-color="#d9822b"/></linearGradient>
+    <linearGradient id="gBurnt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5e3d2c"/><stop offset="1" stop-color="#211510"/></linearGradient>
+    <radialGradient id="gOil" cx=".5" cy=".45" r=".6"><stop offset="0" stop-color="#ffd860"/><stop offset=".7" stop-color="#e9a530"/><stop offset="1" stop-color="#b9741a"/></radialGradient>
+    <linearGradient id="gSteel" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8e9aa4"/><stop offset=".45" stop-color="#f3f7fa"/><stop offset="1" stop-color="#97a3ac"/></linearGradient>
+    <linearGradient id="gCopper" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f5a873"/><stop offset="1" stop-color="#b4502a"/></linearGradient>
+    <linearGradient id="gClay" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e08a55"/><stop offset="1" stop-color="#a5462a"/></linearGradient>
+    <linearGradient id="gPav" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9832f"/><stop offset=".6" stop-color="#f1b866"/><stop offset="1" stop-color="#f8d7a2"/></linearGradient>
+    <linearGradient id="gDosa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f9d67c"/><stop offset="1" stop-color="#d68628"/></linearGradient>
+    <linearGradient id="gNaan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbe5b6"/><stop offset="1" stop-color="#e5ac5d"/></linearGradient>
+    <linearGradient id="gLassi" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffdf6b"/><stop offset="1" stop-color="#ffa62b"/></linearGradient>
+    <radialGradient id="gTandoor" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffb347"/><stop offset=".55" stop-color="#d9531e"/><stop offset="1" stop-color="#3a1a10"/></radialGradient>
+    <linearGradient id="gBrass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe08a"/><stop offset="1" stop-color="#b98722"/></linearGradient>
+    <linearGradient id="gLeaf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6cc96d"/><stop offset="1" stop-color="#2b8a3e"/></linearGradient>
+    <linearGradient id="gCurry" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f79a45"/><stop offset="1" stop-color="#cf5420"/></linearGradient>
+    <linearGradient id="gDal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a432a"/><stop offset="1" stop-color="#4d2116"/></linearGradient>
+    <linearGradient id="gSkyM" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffcf7d"/><stop offset=".55" stop-color="#ff9a8a"/><stop offset="1" stop-color="#e97aa0"/></linearGradient>
+    <linearGradient id="gSea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2aa6b3"/><stop offset="1" stop-color="#11707e"/></linearGradient>
+    <linearGradient id="gGlow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff6c2"/><stop offset="1" stop-color="#ffd36b" stop-opacity="0"/></linearGradient>
+  </defs>
+</svg>
+
+<div id="app">
+  <div id="stage">
+
+    <section id="scr-title" class="screen menu">
+      <div class="bunting" id="bunt1"></div>
+      <div class="title-wrap">
+        <div class="logo"><span class="l1">Masala</span><span class="l2">Rush!</span><span class="deva">मसाला रश</span></div>
+        <div class="chef-hero" id="chef-hero"></div>
+        <button class="btn big" id="btn-play" type="button">Play</button>
+        <div class="trow">
+          <button class="chip" id="t-music" type="button">Music on</button>
+          <button class="chip" id="t-sfx" type="button">Sounds on</button>
+          <button class="chip" id="t-save" type="button">Save code</button>
+        </div>
+        <p class="foot">Fry samosas in Mumbai, flip dosas in Chennai and fire up a Delhi tandoor. Serve fast for tips.</p>
+      </div>
+    </section>
+
+    <section id="scr-map" class="screen menu" hidden>
+      <div class="bunting" id="bunt2"></div>
+      <header class="mbar">
+        <button class="iconbtn" data-nav="title" type="button" aria-label="Back">‹</button>
+        <h2>Pick your kitchen</h2>
+        <div class="wallet"><span class="coin" data-coin></span><b data-wallet>0</b></div>
+      </header>
+      <div class="scroll" id="rest-list"></div>
+    </section>
+
+    <section id="scr-levels" class="screen menu" hidden>
+      <header class="mbar">
+        <button class="iconbtn" data-nav="map" type="button" aria-label="Back">‹</button>
+        <h2 id="lv-title">Kitchen</h2>
+        <div class="wallet"><span class="coin" data-coin></span><b data-wallet>0</b></div>
+      </header>
+      <div class="scroll">
+        <div class="lv-body">
+          <div class="lv-hero" id="lv-hero"></div>
+          <div><div class="lv-grid" id="lv-grid"></div>
+          <div class="lv-actions"><button class="btn alt" id="btn-shop" type="button">Upgrade kitchen</button></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="scr-shop" class="screen menu" hidden>
+      <header class="mbar">
+        <button class="iconbtn" data-nav="levels" type="button" aria-label="Back">‹</button>
+        <h2 id="shop-title">Upgrades</h2>
+        <div class="wallet"><span class="coin" data-coin></span><b data-wallet>0</b></div>
+      </header>
+      <div class="scroll" id="shop-list"></div>
+    </section>
+
+    <section id="scr-game" class="screen" hidden>
+      <div class="hud">
+        <button class="iconbtn" id="btn-pause" type="button" aria-label="Pause"><svg viewBox="0 0 20 20" width="18" height="18"><rect x="4" y="3" width="4.5" height="14" rx="1.5" fill="#3b1f1a"/><rect x="11.5" y="3" width="4.5" height="14" rx="1.5" fill="#3b1f1a"/></svg></button>
+        <div class="earn">
+          <div class="top"><span class="coin" data-coin></span><span id="hud-earn">0</span><span class="goal" id="hud-goal"></span></div>
+          <div class="bar"><div class="fill" id="hud-fill"></div><span class="st" id="hs0"></span><span class="st" id="hs1"></span><span class="st" id="hs2"></span></div>
+        </div>
+        <div class="dayinfo"><b id="hud-day">Day 1</b><span id="hud-left">6 left</span></div>
+      </div>
+      <div class="scene" id="scene"><div class="backdrop" id="backdrop"></div><div class="seats" id="seats"></div></div>
+      <div class="counter"><div class="plates" id="plates"></div></div>
+      <div class="hint" id="hint" hidden></div>
+      <div class="kitchen"><div class="stations" id="stations"></div><div class="pantry" id="pantry"></div></div>
+    </section>
+
+    <div id="fx"></div>
+    <div id="modal" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+  </div>
+</div>
+
+<script>
+'use strict';
+/* =========================================================
+   MASALA RUSH — a Cooking-Fever-style Indian kitchen game
+   ========================================================= */
+
+// ---------- helpers ----------
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const pick = (r, arr) => arr[Math.floor(r() * arr.length)];
+const fmt = n => Math.round(n).toLocaleString('en-IN');
+
+// ---------- art primitives ----------
+const O = '#3b1f1a';
+const S3 = `stroke="${O}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"`;
+const S2 = `stroke="${O}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"`;
+const svg = (inner, vb = '0 0 100 100', cls = '') => `<svg viewBox="${vb}"${cls ? ` class="${cls}"` : ''} aria-hidden="true">${inner}</svg>`;
+
+function face(cx, cy, s = 1, m = 'happy', col = O){
+  const dx = 7 * s; let e = '', mo = '';
+  if (m === 'dead'){
+    const a = 2.6 * s;
+    e = [cx - dx, cx + dx].map(x => `<path d="M${x-a} ${cy-a}L${x+a} ${cy+a}M${x+a} ${cy-a}L${x-a} ${cy+a}" stroke="${col}" stroke-width="${1.8*s}" stroke-linecap="round"/>`).join('');
+    mo = `<path d="M${cx-4*s} ${cy+6*s}q${2*s} ${-2.4*s} ${4*s} 0t${4*s} 0" fill="none" stroke="${col}" stroke-width="${1.6*s}" stroke-linecap="round"/>`;
+  } else if (m === 'sleepy'){
+    e = [cx - dx, cx + dx].map(x => `<path d="M${x-2.6*s} ${cy}q${2.6*s} ${2.6*s} ${5.2*s} 0" fill="none" stroke="${col}" stroke-width="${1.6*s}" stroke-linecap="round"/>`).join('');
+    mo = `<ellipse cx="${cx}" cy="${cy+5.5*s}" rx="${1.4*s}" ry="${1.7*s}" fill="${col}"/>`;
+  } else {
+    e = [cx - dx, cx + dx].map(x => `<ellipse cx="${x}" cy="${cy}" rx="${2.3*s}" ry="${2.8*s}" fill="${col}"/><circle cx="${x+0.8*s}" cy="${cy-1*s}" r="${0.9*s}" fill="#fff"/>`).join('');
+    mo = m === 'wow'
+      ? `<ellipse cx="${cx}" cy="${cy+5.5*s}" rx="${2.2*s}" ry="${2.8*s}" fill="#7a2330"/>`
+      : `<path d="M${cx-3.2*s} ${cy+4.2*s}q${3.2*s} ${3.6*s} ${6.4*s} 0" fill="none" stroke="${col}" stroke-width="${1.6*s}" stroke-linecap="round"/>`;
+  }
+  const bl = m === 'dead' ? '' : `<ellipse cx="${cx-dx-4*s}" cy="${cy+3.6*s}" rx="${3*s}" ry="${1.8*s}" fill="#ff7d9a" opacity=".55"/><ellipse cx="${cx+dx+4*s}" cy="${cy+3.6*s}" rx="${3*s}" ry="${1.8*s}" fill="#ff7d9a" opacity=".55"/>`;
+  return bl + e + mo;
+}
+function bumpy(cx, cy, rx, ry, amp, n){
+  let d = '';
+  for (let i = 0; i <= 72; i++){
+    const a = i / 72 * Math.PI * 2, k = 1 + amp * Math.sin(a * n) / rx;
+    d += (i ? 'L' : 'M') + (cx + rx * k * Math.cos(a)).toFixed(1) + ' ' + (cy + ry * k * Math.sin(a)).toFixed(1);
+  }
+  return d + 'Z';
+}
+const dots = (pts, r, fill, op = 1) => pts.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" opacity="${op}"/>`).join('');
+const fry = (st, raw) => st === 'raw' ? raw : st === 'burnt' ? 'url(#gBurnt)' : 'url(#gGold)';
+const fm = st => st === 'raw' ? 'sleepy' : st === 'burnt' ? 'dead' : 'happy';
+const fc = st => st === 'burnt' ? '#f3e3d3' : O;
+const STAR = `<path d="M12 1.8l3 6.2 6.8.9-5 4.7 1.3 6.7L12 17l-6.1 3.3 1.3-6.7-5-4.7 6.8-.9z" fill="#ffd23f" stroke="${O}" stroke-width="1.8" stroke-linejoin="round"/>`;
+const starSvg = () => svg(STAR, '0 0 24 24');
+const COIN = svg(`<circle cx="12" cy="12" r="10.5" fill="#ffd23f" stroke="${O}" stroke-width="2"/><circle cx="12" cy="12" r="7.3" fill="none" stroke="#e0a313" stroke-width="1.4"/><text x="12" y="16.6" text-anchor="middle" font-size="12.5" font-weight="800" fill="${O}" font-family="system-ui,sans-serif">₹</text>`, '0 0 24 24');
+
+// ---------- food art (viewBox 0 0 100 100) ----------
+const ART = {
+  samosa: st => `<path d="M50 13Q55 11 59 18L87 72Q91 83 79 84L21 84Q9 83 13 72L41 18Q45 11 50 13Z" fill="${fry(st,'#f6e3b6')}" ${S3}/>
+    <path d="M22 78H78" stroke="${st==='burnt'?'#140c08':'#b8692a'}" stroke-width="2.4" stroke-dasharray="3 3.4" opacity=".75"/>
+    <path d="M43 25L29 62" stroke="#fff" stroke-width="3.4" stroke-linecap="round" opacity="${st==='burnt'?.12:.5}"/>
+    ${st==='cooked'?dots([[66,50],[60,70],[37,71],[70,64]],1.6,'#b8692a'):''}${face(50,58,1,fm(st),fc(st))}`,
+  vada: st => `<path d="${bumpy(50,54,31,30,1.7,11)}" fill="${fry(st,'#f2d27a')}" ${S3}/>
+    <ellipse cx="38" cy="40" rx="9" ry="4.5" fill="#fff" opacity="${st==='burnt'?.1:.45}" transform="rotate(-28 38 40)"/>
+    ${st==='cooked'?dots([[64,42],[70,58],[34,66],[56,74],[46,36]],1.6,'#b8692a'):''}${face(50,58,1,fm(st),fc(st))}`,
+  pav: () => pavArt([]),
+  chai: () => `<path d="M40 24q-5-6 0-11t0-11M58 24q-5-6 0-11t0-11" fill="none" stroke="#b9a596" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+    <path d="M23 34H77L69 82Q68 88 62 88H38Q32 88 31 82Z" fill="url(#gClay)" ${S3}/>
+    <ellipse cx="50" cy="34" rx="27" ry="7.5" fill="#c4834e" ${S3}/><ellipse cx="45" cy="33" rx="12" ry="2.6" fill="#ecc9a0"/>
+    <path d="M32 44L36 78" stroke="#fff" stroke-width="3" opacity=".3" stroke-linecap="round"/>${face(50,60,.9)}`,
+  dosa: st => `<circle cx="50" cy="50" r="41" fill="${st==='raw'?'#f7f0dc':st==='burnt'?'url(#gBurnt)':'url(#gDosa)'}" ${S3}/>
+    ${st==='raw'?dots([[34,36],[62,30],[70,58],[40,66],[54,48],[28,54],[60,72]],2.2,'#fff',.9):''}
+    ${st==='cooked'?`<circle cx="50" cy="50" r="31" fill="none" stroke="#c0702a" stroke-width="2" stroke-dasharray="5 6" opacity=".55"/><circle cx="50" cy="50" r="20" fill="none" stroke="#c0702a" stroke-width="2" stroke-dasharray="4 6" opacity=".45"/>`:''}
+    ${face(50,52,1,fm(st),fc(st))}`,
+  idli: st => { const f = st==='raw' ? '#ece6d4' : st==='burnt' ? '#dcc188' : '#fffdf6';
+    return [30,70].map(x => `<ellipse cx="${x}" cy="57" rx="22" ry="15" fill="${f}" ${S3}/><ellipse cx="${x-6}" cy="50" rx="9" ry="3.2" fill="#fff" opacity="${st==='raw'?.4:.95}"/>${face(x,59,.72,fm(st),O)}`).join(''); },
+  medu: st => { const f = fry(st,'#efe2c0');
+    return [[33,60],[67,48]].map(([x,y]) => `<path d="M${x} ${y-21}a21 21 0 1 0 .1 0ZM${x} ${y-6.5}a6.5 6.5 0 1 1 -.1 0Z" fill="${f}" fill-rule="evenodd" ${S3}/>`).join('')
+      + `<path d="M58 36q4-4 10-4" stroke="#fff" stroke-width="3" opacity="${st==='burnt'?.1:.5}" fill="none" stroke-linecap="round"/>` + face(67,62,.62,fm(st),fc(st)); },
+  kaapi: () => `<path d="M44 14q-4-5 0-9M56 14q-4-5 0-9" fill="none" stroke="#b9a596" stroke-width="3" stroke-linecap="round"/>
+    <path d="M6 68Q8 90 50 90Q92 90 94 68Z" fill="url(#gSteel)" ${S3}/><ellipse cx="50" cy="68" rx="44" ry="9" fill="#d5ad80" ${S3}/>
+    <path d="M31 20H69L64 72Q63 78 57 78H43Q37 78 36 72Z" fill="url(#gSteel)" ${S3}/><ellipse cx="50" cy="20" rx="19" ry="5" fill="#c58f60" ${S3}/>
+    <ellipse cx="46" cy="19" rx="8" ry="1.8" fill="#f2dcc0"/>${face(50,48,.8)}`,
+  naan: st => `<path d="M50 11Q83 26 83 58Q83 87 50 89Q17 87 17 58Q17 26 50 11Z" fill="${st==='raw'?'#f4ead6':st==='burnt'?'url(#gBurnt)':'url(#gNaan)'}" ${S3}/>
+    ${st==='cooked'?`<ellipse cx="36" cy="44" rx="5" ry="3" fill="#b8692a" opacity=".7"/><ellipse cx="64" cy="72" rx="6" ry="3.5" fill="#8a4a20" opacity=".75"/><ellipse cx="68" cy="40" rx="3.5" ry="2.4" fill="#8a4a20" opacity=".6"/><ellipse cx="32" cy="74" rx="4" ry="2.4" fill="#b8692a" opacity=".7"/>`:''}
+    ${st==='raw'?dots([[34,40],[62,34],[68,70],[30,70]],1.6,'#fff',.9):''}${face(50,60,1,fm(st),fc(st))}`,
+  tikka: st => { const p = st==='raw' ? '#f6e8cc' : st==='burnt' ? '#3d281e' : '#ea7b33';
+    const cube = x => `<rect x="${x}" y="42" width="17" height="17" rx="4" fill="${p}" ${S3}/>${st==='cooked'?`<path d="M${x+3} ${45}h5M${x+9} ${55}h5" stroke="#7a3412" stroke-width="2.5" stroke-linecap="round"/>`:''}`;
+    return `<path d="M4 51H96" stroke="#9aa6af" stroke-width="4.5" stroke-linecap="round"/><circle cx="96" cy="51" r="3.5" fill="#cfd7dd" ${S2}/>
+      ${cube(10)}<path d="M31 41Q37 51 31 61Q27 51 31 41Z" fill="${st==='burnt'?'#2a1d16':'#4caf50'}" ${S2}/>${cube(38)}
+      <path d="M59 42Q66 51 59 60Q55 51 59 42Z" fill="${st==='burnt'?'#2a1d16':'#b04a8a'}" ${S2}/>${cube(66)}${face(46.5,50,.55,fm(st),fc(st))}`; },
+  makhani: st => curryTop(st, 'url(#gCurry)', 'chicken'),
+  dal: st => curryTop(st, 'url(#gDal)', 'dal'),
+  biryani: st => `<path d="M12 70Q14 30 50 25Q86 30 88 70Q70 78 50 78Q30 78 12 70Z" fill="${st==='burnt'?'url(#gBurnt)':'#fff3d4'}" ${S3}/>
+    ${st==='burnt'?'':`<ellipse cx="38" cy="44" rx="11" ry="6" fill="#ffb238" opacity=".85"/><ellipse cx="66" cy="58" rx="9" ry="5" fill="#ffb238" opacity=".75"/><ellipse cx="58" cy="36" rx="6" ry="3.4" fill="#f26a1b" opacity=".6"/>
+    ${[[30,58],[46,34],[72,46],[54,64],[36,68],[64,30],[78,62],[24,48]].map(([x,y],i)=>`<ellipse cx="${x}" cy="${y}" rx="3.6" ry="1.4" fill="#fffef8" stroke="#d8c6a6" stroke-width=".8" transform="rotate(${i*37} ${x} ${y})"/>`).join('')}
+    <path d="M40 30q4-4 8 0M70 66q4-4 8 0M22 60q4-4 8 0" stroke="#7a3d1a" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+    <path d="M60 22q6-8 12 0q-6 5-12 0Z" fill="#3fa34d" ${S2}/>`}${face(50,56,.9,fm(st),fc(st))}`,
+  lassi: () => `<path d="M58 4L51 32" stroke="#ff5d8f" stroke-width="5" stroke-linecap="round"/><path d="M58 4L51 32" stroke="#fff" stroke-width="5" stroke-dasharray="3 4"/>
+    <path d="M30 34H70L66 86Q65 90 59 90H41Q35 90 34 86Z" fill="url(#gLassi)"/>
+    <path d="M29 28Q40 22 50 28Q60 22 71 28L70 38Q60 33 50 38Q40 33 30 38Z" fill="#fffaf0" ${S2}/>
+    <path d="M27 22H73L66 86Q65 92 59 92H41Q35 92 34 86Z" fill="none" ${S3}/>
+    <path d="M66 22q12-2 12 10q-6-6-14-4Z" fill="#ffb12b" ${S2}/><path d="M35 44L38 82" stroke="#fff" stroke-width="3" opacity=".55" stroke-linecap="round"/>${face(50,62,.85)}`,
+};
+function curryTop(st, col, kind){
+  const body = st==='burnt' ? 'url(#gBurnt)' : col;
+  const chunks = st==='burnt' ? '' : kind==='chicken'
+    ? `<path d="${bumpy(34,50,7,5,1,5)}" fill="#f8c08c" ${S2}/><path d="${bumpy(64,46,6,5,1,5)}" fill="#f8c08c" ${S2}/><path d="${bumpy(58,66,6,4.5,1,5)}" fill="#f8c08c" ${S2}/><ellipse cx="44" cy="64" rx="4" ry="2" fill="#ffd27a" opacity=".8"/>`
+    : `${dots([[34,50],[40,58],[62,48],[66,58],[52,66],[46,44],[58,56],[30,60]],2,'#21100a')}<ellipse cx="52" cy="50" rx="7" ry="3" fill="#ffd25a" opacity=".85"/>`;
+  return `<ellipse cx="50" cy="56" rx="41" ry="30" fill="url(#gCopper)" ${S3}/><ellipse cx="50" cy="53" rx="34" ry="22" fill="${body}" ${S2}/>${chunks}
+    <ellipse cx="34" cy="44" rx="8" ry="2.6" fill="#fff" opacity="${st==='burnt'?.08:.35}"/>${face(50,77,.7,fm(st),st==='burnt'?'#3a1a10':O)}`;
+}
+function pavArt(adds){
+  const v = adds.includes('vada'), l = adds.includes('lasun');
+  const lift = v ? -9 : 0;
+  return `<path d="M13 62Q13 85 32 85H68Q87 85 87 62Z" fill="#f6d6a3" ${S3}/>`
+    + (l && !v ? `<path d="M18 62H82" stroke="#c8452e" stroke-width="5" stroke-linecap="round"/>` : '')
+    + (v ? `<path d="${bumpy(50,61,35,9,1.4,13)}" fill="url(#gGold)" ${S3}/>` + (l ? dots([[30,60],[40,64],[52,59],[62,63],[72,60],[46,61],[58,66]],1.8,'#c8452e') : '') : '')
+    + `<g transform="translate(0 ${lift})"><path d="M10 60Q10 25 50 24Q90 25 90 60Q90 64 85 64H15Q10 64 10 60Z" fill="url(#gPav)" ${S3}/>
+       <path d="M50 27V62" stroke="${O}" stroke-width="2" opacity=".3"/><path d="M21 44Q25 33 36 31" stroke="#fff" stroke-width="3.5" stroke-linecap="round" fill="none" opacity=".55"/>
+       <path d="M60 32Q70 32 76 39" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none" opacity=".4"/>${face(50,47,.9)}</g>`;
+}
+function dosaRoll(masala){
+  return `<g transform="rotate(-18 50 52)"><rect x="4" y="38" width="90" height="29" rx="14.5" fill="url(#gDosa)" ${S3}/>
+    <path d="M20 42q4 10 0 21M36 42q4 10 0 21M52 42q4 10 0 21M68 42q4 10 0 21" stroke="#c0702a" stroke-width="2" fill="none" opacity=".55"/>
+    <ellipse cx="88" cy="52.5" rx="6.5" ry="13.5" fill="${masala?'#f2c230':'#fbe6b4'}" ${S3}/>
+    ${masala?'<circle cx="87" cy="48" r="1.6" fill="#2b1a10"/><circle cx="89" cy="56" r="1.6" fill="#3fa34d"/><circle cx="86" cy="58" r="1.3" fill="#2b1a10"/>':''}</g>${face(44,56,.9)}`;
+}
+function bowl(col, inner = ''){
+  return `<path d="M13 48Q15 87 50 87Q85 87 87 48Z" fill="url(#gSteel)" ${S3}/><ellipse cx="50" cy="48" rx="37" ry="12" fill="${col}" ${S3}/>${inner}
+    <path d="M21 58Q25 76 40 81" stroke="#fff" stroke-width="3" opacity=".55" fill="none" stroke-linecap="round"/>`;
+}
+const SIDE = {
+  green: () => bowl('#43a64c', dots([[38,46],[56,50],[64,45],[46,51]],1.8,'#2c7a35') + dots([[44,45],[60,48]],1.4,'#b8f0a8')),
+  imli: () => bowl('#7a2c18', `<ellipse cx="42" cy="45" rx="10" ry="2.4" fill="#c46a46" opacity=".7"/>`),
+  lasun: () => bowl('#c8452e', `<path d="M24 47Q50 26 76 47" fill="#c8452e" ${S2}/>` + dots([[40,40],[52,36],[60,42],[46,44],[34,45],[66,46]],1.4,'#7d1f12')),
+  mirchi: () => `<path d="M20 80Q28 32 78 18Q87 16 84 25Q50 40 33 84Q25 93 20 80Z" fill="#43a047" ${S3}/>
+    <path d="M78 18q4-9 13-9" stroke="#2e7d32" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <path d="M36 62Q46 40 66 30" stroke="#c6f2b8" stroke-width="3" fill="none" opacity=".7" stroke-linecap="round"/>${dots([[46,52],[56,44],[38,70]],2.2,'#2a6b2e',.7)}`,
+  masala: () => bowl('#f2c230', `<path d="${bumpy(42,44,8,4,1,5)}" fill="#ffe27a" ${S2}/><path d="${bumpy(60,47,7,3.6,1,5)}" fill="#ffe27a" ${S2}/>` + dots([[34,48],[52,52],[68,44]],1.5,'#1c1210') + `<path d="M48 41q5-4 9 0q-5 3-9 0Z" fill="#3fa34d"/>`),
+  sambar: () => bowl('#d9732a', dots([[36,46],[58,50],[66,44]],2.6,'#ff9d4d') + `<path d="M40 50L60 42" stroke="#5f8f2d" stroke-width="4" stroke-linecap="round"/>` + dots([[48,46]],1.6,'#fff2c0')),
+  coconut: () => bowl('#f9f5e8', dots([[38,46],[46,50],[56,44],[63,49]],1.5,'#1c1210') + `<path d="M50 46q6-5 11 0q-6 4-11 0Z" fill="#3a8f3e"/><path d="M33 50q4-3 7 1" stroke="#d03a2a" stroke-width="2.4" fill="none" stroke-linecap="round"/>`),
+  podi: () => `<ellipse cx="50" cy="70" rx="38" ry="13" fill="url(#gSteel)" ${S3}/><path d="M18 68Q34 34 50 32Q66 34 82 68Q50 76 18 68Z" fill="#cf6a2e" ${S3}/>`
+    + dots([[36,58],[48,46],[60,54],[52,64],[42,66],[66,62]],1.5,'#8a3a14') + `<ellipse cx="54" cy="40" rx="7" ry="4" fill="#ffd54a" ${S2}/><ellipse cx="52" cy="39" rx="2.5" ry="1.2" fill="#fff"/>`,
+  butter: () => `<ellipse cx="50" cy="66" rx="40" ry="16" fill="#eef3f6" ${S3}/><path d="M24 40L60 30L78 50L42 62Z" fill="#ffe066" ${S3}/><path d="M24 40L42 62L42 72L24 50Z" fill="#f4c531" ${S3}/><path d="M42 62L78 50L78 60L42 72Z" fill="#f8d23f" ${S3}/><path d="M34 40L56 34" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/>`,
+  garlic: () => `<path d="M50 14Q54 26 62 32Q82 42 78 64Q72 86 50 86Q28 86 22 64Q18 42 38 32Q46 26 50 14Z" fill="#fbf7ee" ${S3}/>
+    <path d="M50 34Q42 56 46 84M50 34Q60 56 56 84M38 40Q30 58 34 80M62 40Q70 58 66 80" stroke="#d9cdb8" stroke-width="2" fill="none"/><path d="M50 14q-2-6 2-10" stroke="${O}" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M70 26q10-12 22-8q-8 12-22 8Z" fill="#3fa34d" ${S2}/>`,
+  cream: () => `<path d="M24 36H70L66 84Q65 90 59 90H35Q29 90 28 84Z" fill="#f2f6f8" ${S3}/><path d="M70 44q14 2 12 18q-2 10-14 10" stroke="${O}" stroke-width="3" fill="none"/>
+    <path d="M24 36Q36 30 47 36Q58 30 70 36" fill="#fffdf6" ${S3}/><path d="M24 36L18 30" stroke="${O}" stroke-width="3" stroke-linecap="round"/>`,
+  dhania: () => [[36,52,-30],[54,40,10],[66,58,40],[46,66,-10],[60,74,20]].map(([x,y,r]) => `<g transform="rotate(${r} ${x} ${y})"><path d="M${x} ${y-14}q11 6 0 26q-11-20 0-26Z" fill="#43a047" ${S2}/><path d="M${x} ${y-10}V${y+10}" stroke="#2e7d32" stroke-width="1.6"/></g>`).join('')
+    + `<path d="M50 88Q48 76 50 66M50 88Q56 78 62 70M50 88Q42 80 38 66" stroke="#2e7d32" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,
+  mint: () => bowl('#4fc06a', dots([[38,46],[56,50],[64,45]],1.8,'#2c8a3f') + `<path d="M46 42q6-6 12 0q-6 5-12 0Z" fill="#98e39f" ${S2}/>`),
+  onion: () => `<ellipse cx="40" cy="56" rx="26" ry="22" fill="none" stroke="#b04a8a" stroke-width="7"/><ellipse cx="40" cy="56" rx="26" ry="22" fill="none" stroke="${O}" stroke-width="1.6"/>
+    <ellipse cx="40" cy="56" rx="14" ry="11" fill="none" stroke="#c96aa6" stroke-width="5"/><ellipse cx="40" cy="56" rx="14" ry="11" fill="none" stroke="${O}" stroke-width="1.4"/>
+    <path d="M58 76L90 50Q94 70 80 82Q70 88 58 76Z" fill="#ffe14d" ${S3}/><path d="M64 76L86 56" stroke="#fff6b0" stroke-width="2.5"/>`,
+  raita: () => bowl('#fbfaf2', dots([[38,46],[58,50]],3,'#7cc36a') + dots([[46,44],[64,46],[52,51],[34,49]],1.2,'#7a4a22')),
+};
+const TOP = {
+  green: () => `<path d="M27 74q5-6 10 0t10 0t10 0t10 0t9 0" fill="none" stroke="#3a9a46" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`,
+  imli: () => `<path d="M36 40q4-5 8 0t8 0t8 0" fill="none" stroke="#6e2412" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`,
+  butter: () => `<path d="M38 26L56 22L62 32L44 36Z" fill="#ffe066" ${S2}/><path d="M42 36q2 10 12 12q-2-8 6-14" fill="#ffd43b" opacity=".85"/><ellipse cx="34" cy="46" rx="8" ry="3" fill="#fff6b0" opacity=".7"/>`,
+  garlic: () => dots([[34,36],[62,42],[44,74],[68,66],[30,62],[56,30]],2.6,'#fffaf0') + dots([[40,46],[58,52],[50,80],[36,70],[66,58],[48,34]],2,'#3fa34d'),
+  cream: () => `<path d="M30 52q12-12 26-2q-10 8-18 2q6-6 12-2" fill="none" stroke="#fffdf5" stroke-width="4" stroke-linecap="round"/>`,
+  dhania: () => [[60,38],[70,52],[28,60]].map(([x,y]) => `<path d="M${x} ${y}q4-6 8 0q-4 4-8 0Z" fill="#3fa34d" stroke="#1f5f26" stroke-width="1"/><path d="M${x+2} ${y+4}q3-5 7 0q-3 3-7 0Z" fill="#43a047" stroke="#1f5f26" stroke-width="1"/>`).join(''),
+};
+const RAWTILE = {
+  samosa: () => `<ellipse cx="50" cy="78" rx="44" ry="12" fill="#c9d1d7" ${S3}/><g transform="translate(-6 4) scale(.62)">${ART.samosa('raw')}</g><g transform="translate(40 14) scale(.62)">${ART.samosa('raw')}</g>`,
+  vada: () => `<ellipse cx="50" cy="78" rx="44" ry="12" fill="#c9d1d7" ${S3}/><g transform="translate(-4 14) scale(.6)">${ART.vada('raw')}</g><g transform="translate(40 8) scale(.6)">${ART.vada('raw')}</g>`,
+  pav: () => `<g transform="translate(0 4)">${pavArt([])}</g>`,
+  dosa: () => bucket('#f7f1e2', '#d4cbb5'),
+  idli: () => bucket('#f2eee3', '#c9c3b2', true),
+  medu: () => bowl('#efe2c0', dots([[40,46],[58,48]],2,'#d8c8a0')) + `<path d="M64 44L86 20" stroke="#8a949c" stroke-width="5" stroke-linecap="round"/>`,
+  naan: () => `<ellipse cx="50" cy="76" rx="44" ry="12" fill="#c58f5c" ${S3}/>` + [[30,56],[70,56],[50,40]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="17" fill="#f6ecd8" ${S3}/><ellipse cx="${x-5}" cy="${y-6}" rx="5" ry="2.5" fill="#fff"/>`).join(''),
+  tikka: () => ART.tikka('raw'),
+  makhani: () => bowl('#e8742c', `<path d="${bumpy(38,44,7,4,1,5)}" fill="#f7a66a" ${S2}/><path d="${bumpy(60,47,7,4,1,5)}" fill="#f7a66a" ${S2}/>`),
+  dal: () => bowl('#3d1c12', dots([[36,46],[44,50],[52,45],[60,49],[66,45],[48,44]],1.8,'#6b3826')),
+  biryani: () => `<ellipse cx="50" cy="62" rx="42" ry="26" fill="url(#gCopper)" ${S3}/><ellipse cx="50" cy="56" rx="35" ry="17" fill="#fff6dc" ${S2}/>`
+    + dots([[36,52],[46,58],[60,54],[66,60],[54,50]],2,'#ffb238') + `<path d="M40 48q5-4 10 0M58 62q5-4 10 0" stroke="#7a3d1a" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,
+};
+function bucket(col, ladle, molds){
+  return `<path d="M20 34H80L73 86Q72 91 66 91H34Q28 91 27 86Z" fill="url(#gSteel)" ${S3}/><ellipse cx="50" cy="34" rx="30" ry="9" fill="${col}" ${S3}/>
+    <ellipse cx="42" cy="32" rx="10" ry="2.4" fill="#fff"/><path d="M62 30L86 6" stroke="#8a949c" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="62" cy="31" rx="8" ry="4" fill="${ladle}" ${S2}/>${molds?`<path d="M30 60h40" stroke="#fff" stroke-width="2" opacity=".6"/>`:''}`;
+}
+const TRASH = `<path d="M26 30H74L69 88Q68 92 63 92H37Q32 92 31 88Z" fill="#7e8b95" ${S3}/><path d="M38 40V82M50 40V82M62 40V82" stroke="#5a6670" stroke-width="3" stroke-linecap="round"/>
+  <rect x="20" y="20" width="60" height="11" rx="4" fill="#9aa6af" ${S3}/><path d="M42 20V14H58V20" fill="none" ${S3}/>`;
+
+// ---------- plates & dishes ----------
+function plateArt(kind){
+  if (kind === 'leaf') return `<path d="M3 52Q8 14 50 10Q92 14 97 52Q92 90 50 94Q8 90 3 52Z" fill="url(#gLeaf)" ${S3}/><path d="M8 52H92" stroke="#c8f0b4" stroke-width="2.5"/>${[22,38,54,70,84].map(x=>`<path d="M${x} 52L${x-8} 24M${x} 52L${x-8} 80" stroke="#9fde8f" stroke-width="1.4" opacity=".7"/>`).join('')}`;
+  if (kind === 'thali') return `<ellipse cx="50" cy="52" rx="47" ry="43" fill="url(#gBrass)" ${S3}/><ellipse cx="50" cy="52" rx="38" ry="34" fill="#f2d48a" stroke="#b98722" stroke-width="2"/>`;
+  return `<ellipse cx="50" cy="52" rx="47" ry="43" fill="url(#gSteel)" ${S3}/><ellipse cx="50" cy="52" rx="37" ry="33" fill="#e3e9ed" stroke="#a5b0b8" stroke-width="2"/>`;
+}
+function dishInner(base, adds){
+  let b;
+  if (base === 'pav') b = pavArt(adds);
+  else if (base === 'dosa') b = dosaRoll(adds.includes('masala'));
+  else b = ART[base]('cooked');
+  const tops = adds.filter(a => ADD[a].k === 'top').map(a => TOP[a](base)).join('');
+  const sides = adds.filter(a => ADD[a].k === 'side');
+  const pos = [[60,58],[2,60],[62,0]];
+  const sd = sides.map((a, i) => `<g transform="translate(${pos[i][0]} ${pos[i][1]}) scale(.4)">${SIDE[a]()}</g>`).join('');
+  return `<g transform="translate(13 10) scale(.74)">${b}${tops}</g>${sd}`;
+}
+function itemIcon(key){
+  if (key.startsWith('drink:')) return svg(ART[key.slice(6)]());
+  const [base, a] = key.split('|');
+  return svg(dishInner(base, a ? a.split(',') : []));
+}
+
+// ---------- cooking vessels (slot art) ----------
+function slotArt(vessel, it, st){
+  // st: 'cook' | 'ready' | 'burnt' | null
+  const food = (s, tr) => `<g transform="${tr}">${ART[it](s)}</g>`;
+  const cs = st === 'cook' ? 'raw' : st === 'burnt' ? 'burnt' : 'cooked';
+  switch (vessel){
+    case 'kadai': return `<path d="M4 54q-4-10 8-12M96 54q4-10-8-12" fill="none" stroke="${O}" stroke-width="5" stroke-linecap="round"/>
+      <ellipse cx="50" cy="58" rx="46" ry="35" fill="#2e2b2b" ${S3}/><ellipse cx="50" cy="54" rx="38" ry="27" fill="url(#gOil)"/>${it ? food(cs, 'translate(19 16) scale(.62)') : ''}`;
+    case 'tawa': return `<path d="M88 74L99 92" stroke="${O}" stroke-width="7" stroke-linecap="round"/><ellipse cx="50" cy="52" rx="47" ry="44" fill="#2b2b30" ${S3}/><ellipse cx="50" cy="51" rx="40" ry="37" fill="#3d3d44"/>${it ? food(cs, 'translate(11 11) scale(.78)') : ''}`;
+    case 'tandoor': return `<circle cx="50" cy="52" r="47" fill="url(#gClay)" ${S3}/><circle cx="50" cy="52" r="34" fill="url(#gTandoor)" ${S3}/>${it ? food(cs, 'translate(17 19) scale(.66)') : `<circle cx="50" cy="52" r="12" fill="#ffcf6b" opacity=".35"/>`}`;
+    case 'handi': return it ? `<g transform="translate(-1 -2) scale(1.02)">${st==='cook'?curryCook(it):ART[it](cs)}</g>` : `<ellipse cx="50" cy="56" rx="41" ry="30" fill="url(#gCopper)" ${S3}/><ellipse cx="50" cy="53" rx="34" ry="22" fill="#4a2a1e" ${S2}/>`;
+    case 'dum': {
+      if (!it || st === 'cook') return `<ellipse cx="50" cy="58" rx="44" ry="32" fill="url(#gCopper)" ${S3}/>${st==='cook'?`<ellipse cx="50" cy="52" rx="35" ry="23" fill="#f3dcae" ${S2}/><ellipse cx="50" cy="52" rx="28" ry="17" fill="url(#gBrass)" ${S2}/><circle cx="50" cy="50" r="5" fill="#c99a33" ${S2}/>${[0,1,2,3,4,5,6,7].map(i=>{const a=i/8*6.283;return `<path d="M${50+31.5*Math.cos(a)} ${52+20*Math.sin(a)}l2 1" stroke="#c9a874" stroke-width="2"/>`}).join('')}`:`<ellipse cx="50" cy="53" rx="35" ry="23" fill="#4a2a1e" ${S2}/>`}`;
+      return `<ellipse cx="50" cy="60" rx="44" ry="32" fill="url(#gCopper)" ${S3}/><g transform="translate(9 6) scale(.82)">${ART.biryani(cs)}</g>`;
+    }
+    case 'patila': {
+      const liquid = !it ? '#8e99a2' : st === 'cook' ? '#dcbc94' : st === 'burnt' ? '#5e3519' : '#a9622f';
+      return `<path d="M14 40H86V82Q86 90 78 90H22Q14 90 14 82Z" fill="url(#gSteel)" ${S3}/><path d="M6 46H14M86 46H94" stroke="${O}" stroke-width="5" stroke-linecap="round"/>
+        <ellipse cx="50" cy="40" rx="36" ry="10" fill="#e8eef2" ${S3}/><ellipse cx="50" cy="41" rx="30" ry="7.5" fill="${liquid}"/>
+        ${st==='ready'?`<ellipse cx="50" cy="38" rx="22" ry="5" fill="#d9a774"/><ellipse cx="42" cy="37" rx="7" ry="2" fill="#f0d0aa"/>`:''}
+        ${st==='burnt'?`<path d="M22 44q2 16-2 22q-4-6 0-22ZM70 44q4 20-1 28q-5-8 1-28ZM46 46q3 10 0 14q-3-4 0-14Z" fill="#7a4320" ${S2}/>`:''}
+        ${it?face(50,66,.9,st==='burnt'?'dead':st==='cook'?'sleepy':'happy'):''}`;
+    }
+    case 'steamer': {
+      if (!it) return `<ellipse cx="50" cy="56" rx="45" ry="36" fill="url(#gSteel)" ${S3}/>${[[32,56],[68,56]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="15" ry="11" fill="#c4ced5" ${S2}/>`).join('')}`;
+      if (st === 'cook') return `<ellipse cx="50" cy="62" rx="45" ry="30" fill="url(#gSteel)" ${S3}/><path d="M10 60Q12 18 50 16Q88 18 90 60Z" fill="#dbe3e8" ${S3}/><rect x="42" y="8" width="16" height="10" rx="4" fill="#8e99a2" ${S2}/><path d="M24 44Q30 30 44 26" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>${face(50,46,.9,'sleepy')}`;
+      return `<ellipse cx="50" cy="58" rx="45" ry="34" fill="url(#gSteel)" ${S3}/><g transform="translate(4 6) scale(.92)">${ART.idli(cs)}</g>`;
+    }
+    case 'filter': {
+      if (st === 'ready' || st === 'burnt') return `<g ${st==='burnt'?'opacity=".75"':''}>${ART.kaapi()}</g>${st==='burnt'?`<path d="M74 14l6 6m0-6l-6 6M77 10v14M70 17h14" stroke="#4aa3df" stroke-width="2.6" stroke-linecap="round"/>`:''}`;
+      return `<path d="M12 72Q14 90 50 90Q86 90 88 72Z" fill="url(#gSteel)" ${S3}/><ellipse cx="50" cy="72" rx="38" ry="8" fill="#cfd7dd" ${S3}/>
+        <path d="M28 26H72L68 64Q67 68 62 68H38Q33 68 32 64Z" fill="url(#gBrass)" ${S3}/><ellipse cx="50" cy="26" rx="22" ry="6" fill="#e9c66a" ${S3}/><path d="M28 44H72" stroke="${O}" stroke-width="2.4"/>
+        ${it?`<path d="M50 68V78" stroke="#4b2510" stroke-width="3" stroke-dasharray="3 3"/>`:''}${it?face(50,54,.8,'sleepy'):''}`;
+    }
+    case 'blender': {
+      if (st === 'ready' || st === 'burnt') return ART.lassi();
+      return `<rect x="22" y="72" width="56" height="20" rx="6" fill="#e8467c" ${S3}/><circle cx="50" cy="82" r="4" fill="#fff" ${S2}/>
+        <path d="M28 18H72L66 72H34Z" fill="#eaf6fb" fill-opacity=".8" ${S3}/>${it?`<path d="M31 40H69L66 72H34Z" fill="url(#gLassi)"/><path d="M36 50q14 8 28-2" stroke="#fff" stroke-width="3" fill="none" opacity=".7"/>`:''}
+        <rect x="26" y="12" width="48" height="8" rx="3" fill="#3b1f1a"/>${it?face(50,58,.8,'sleepy'):''}`;
+    }
+  }
+  return '';
+}
+function curryCook(it){
+  const col = it === 'makhani' ? '#f2a86c' : '#6b3826';
+  return `<ellipse cx="50" cy="56" rx="41" ry="30" fill="url(#gCopper)" ${S3}/><ellipse cx="50" cy="53" rx="34" ry="22" fill="${col}" ${S2}/>
+    ${dots([[38,48],[60,56],[50,44]],3,'rgba(255,255,255,.5)')}${face(50,77,.7,'sleepy')}`;
+}
+
+// ---------- customers ----------
+const SKINS = ['#f7d3ad','#eebc8a','#dca36f','#c88b57','#a96f40','#8a5632'];
+const HAIRC = ['#2a1a14','#1b1210','#3d2418','#4a2c1a'];
+const SHIRTS = {
+  mumbai: ['#ff6f61','#2ec4b6','#ffbf3f','#7b5cd6','#ff8fab','#3a86ff','#06d6a0'],
+  chennai: ['#fffbe8','#e76f51','#2a9d8f','#e9c46a','#d62868','#6a4c93','#f4a261'],
+  delhi: ['#f4a261','#e63946','#457b9d','#ffd166','#8d5bd6','#06d6a0','#ff8fab'],
+};
+const TURBANS = ['#ff9f1c','#e8467c','#1b4f9c','#ffd23f','#0e7c7b'];
+function genLook(r, rid){
+  const kind = pick(r, ['man','woman','woman','man','kid','elder','man','woman']);
+  const L = { kind, skin: pick(r, SKINS), hairC: pick(r, HAIRC), shirt: pick(r, SHIRTS[rid]), acc: pick(r, TURBANS), x: {} };
+  if (kind === 'man'){
+    L.style = rid === 'delhi' && r() < .35 ? 'turban' : rid === 'mumbai' && r() < .25 ? 'topi' : pick(r, ['short','curly','short']);
+    L.x.mustache = L.style === 'turban' || r() < .55; L.x.beard = L.style === 'turban'; L.x.glasses = r() < .25;
+  } else if (kind === 'woman'){
+    L.style = rid === 'chennai' && r() < .55 ? 'braid' : pick(r, ['long','bun','long']);
+    L.x.bindi = r() < .55; L.x.earrings = r() < .75; L.x.gajra = L.style === 'braid'; L.x.glasses = r() < .15; L.x.pallu = r() < .45;
+  } else if (kind === 'kid'){
+    L.style = pick(r, ['short','pony','curly']); L.x.pony = L.style === 'pony';
+  } else {
+    L.hairC = '#d9d4cc'; L.style = pick(r, ['bald','bun','bald']); L.x.glasses = r() < .6; L.x.mustache = L.style === 'bald' && r() < .7;
+    L.x.bindi = L.style === 'bun' && r() < .6; L.x.earrings = L.style === 'bun';
+  }
+  return L;
+}
+function custSVG(L, mood){
+  const hc = L.hairC, sk = L.skin; let back = '', front = '', ex = '';
+  const fringe = `<path d="M21 52Q21 25 50 25Q79 25 79 52Q70 36 51 34Q50 40 49 34Q30 36 21 52Z" fill="${hc}" ${S3}/>`;
+  switch (L.style){
+    case 'long': back = `<path d="M17 60Q14 22 50 21Q86 22 83 60L85 100Q70 104 64 94L36 94Q30 104 15 100Z" fill="${hc}" ${S3}/>`; front = fringe; break;
+    case 'bun': back = `<circle cx="50" cy="22" r="12" fill="${hc}" ${S3}/>`; front = fringe; break;
+    case 'braid': back = `<path d="M18 60Q15 22 50 21Q85 22 82 60Q84 70 78 74L22 74Q16 70 18 60Z" fill="${hc}" ${S3}/><path d="M76 70q12 12 4 26q-4 8 2 16" stroke="${hc}" stroke-width="10" fill="none" stroke-linecap="round"/>`;
+      front = fringe; ex += dots([[83,44],[86,51],[85,58],[81,64]],3.3,'#fff') + `<circle cx="83" cy="44" r="3.3" fill="none" stroke="#cfcfcf"/>`; break;
+    case 'pony': back = `<path d="M74 34q18-2 16 22q-2 10-8 12q4-14-8-22Z" fill="${hc}" ${S3}/>`; front = fringe + `<circle cx="76" cy="36" r="3.5" fill="#e8467c" ${S2}/>`; break;
+    case 'short': front = `<path d="M20 57Q15 22 50 21Q85 22 80 57Q78 40 66 36Q56 42 44 36Q28 38 20 57Z" fill="${hc}" ${S3}/>`; break;
+    case 'curly': front = `<path d="M19 56Q12 40 22 32Q22 20 36 20Q44 12 54 18Q66 12 72 22Q86 24 82 38Q90 46 81 56Q76 42 64 38Q50 44 36 38Q24 42 19 56Z" fill="${hc}" ${S3}/>`; break;
+    case 'topi': front = `<path d="M20 57Q15 30 50 29Q85 30 80 57Q76 44 50 44Q26 44 20 57Z" fill="${hc}" ${S3}/><path d="M22 42Q26 22 50 20Q74 22 78 42Q50 34 22 42Z" fill="#fbfbf3" ${S3}/><path d="M50 21Q52 30 50 38" stroke="#cfcfc0" stroke-width="2"/>`; break;
+    case 'turban': front = `<path d="M17 50Q14 14 50 12Q86 14 83 50Q66 38 50 41Q34 38 17 50Z" fill="${L.acc}" ${S3}/><path d="M24 40Q40 22 72 22M22 30Q46 18 66 16" stroke="rgba(0,0,0,.22)" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M50 42L42 30" stroke="rgba(0,0,0,.2)" stroke-width="2.4"/>`; break;
+    case 'bald': front = `<path d="M22 64q-4-16 6-22M78 64q4-16-6-22" stroke="${hc}" stroke-width="8" fill="none" stroke-linecap="round"/><ellipse cx="40" cy="36" rx="8" ry="4" fill="#fff" opacity=".35" transform="rotate(-20 40 36)"/>`; break;
+  }
+  const angry = mood === 'mad', annoyed = mood === 'annoyed';
+  let eyes, mouth, brows = '';
+  if (mood === 'joy'){
+    eyes = `<path d="M34 61q5-6 10 0M56 61q5-6 10 0" stroke="${O}" stroke-width="2.8" fill="none" stroke-linecap="round"/>`;
+    mouth = `<path d="M41 70Q50 82 59 70Z" fill="#8a2a36" ${S2}/><path d="M45 75q5 3 10 0" stroke="#ff8aa1" stroke-width="2.4" fill="none"/>`;
+  } else {
+    const ry = annoyed ? 2.2 : angry ? 1.8 : 3.4;
+    eyes = `<ellipse cx="39" cy="61" rx="2.8" ry="${ry}" fill="${O}"/><ellipse cx="61" cy="61" rx="2.8" ry="${ry}" fill="${O}"/>` + (angry ? '' : `<circle cx="40" cy="59.8" r="1" fill="#fff"/><circle cx="62" cy="59.8" r="1" fill="#fff"/>`);
+    mouth = mood === 'happy' ? `<path d="M44 71q6 6 12 0" stroke="${O}" stroke-width="2.6" fill="none" stroke-linecap="round"/>`
+      : mood === 'neutral' ? `<path d="M45 73h10" stroke="${O}" stroke-width="2.6" stroke-linecap="round"/>`
+      : angry ? `<path d="M43 76Q50 68 57 76Z" fill="#8a2a36" ${S2}/>` : `<path d="M44 75q6-5 12 0" stroke="${O}" stroke-width="2.6" fill="none" stroke-linecap="round"/>`;
+    if (annoyed || angry) brows = `<path d="M33 ${angry?52:54}L44 ${angry?57:56.5}M67 ${angry?52:54}L56 ${angry?57:56.5}" stroke="${O}" stroke-width="2.8" stroke-linecap="round"/>`;
+  }
+  if (L.x.glasses) ex += `<circle cx="39" cy="61" r="7.5" fill="rgba(255,255,255,.25)" ${S2}/><circle cx="61" cy="61" r="7.5" fill="rgba(255,255,255,.25)" ${S2}/><path d="M46.5 61h7" ${S2}/>`;
+  if (L.x.beard) ex += `<path d="M22 64Q24 94 50 96Q76 94 78 64Q72 80 50 82Q28 80 22 64Z" fill="${hc}" ${S2}/>`;
+  if (L.x.mustache) ex += `<path d="M40 69Q45 64 50 67Q55 64 60 69Q55 71 50 69Q45 71 40 69Z" fill="${hc}" ${S2}/>`;
+  if (L.x.bindi) ex += `<circle cx="50" cy="48.5" r="2.3" fill="#d0103a"/>`;
+  if (L.x.earrings) ex += `<circle cx="20.5" cy="70" r="3" fill="#f5c542" ${S2}/><circle cx="79.5" cy="70" r="3" fill="#f5c542" ${S2}/>`;
+  const pallu = L.x.pallu ? `<path d="M20 100L64 122H84Q70 104 34 92Z" fill="${L.acc}" ${S2}/><path d="M24 100L62 118" stroke="#ffd23f" stroke-width="2" stroke-dasharray="3 3"/>` : '';
+  const body = `<path d="M13 124Q15 93 50 90Q85 93 87 124Z" fill="${L.shirt}" ${S3}/>${pallu}<path d="M42 91L50 100L58 91" fill="none" ${S2}/>`;
+  const ears = `<circle cx="21" cy="62" r="6" fill="${sk}" ${S3}/><circle cx="79" cy="62" r="6" fill="${sk}" ${S3}/>`;
+  const blush = `<ellipse cx="31" cy="69" rx="5" ry="3" fill="#ff7d9a" opacity=".5"/><ellipse cx="69" cy="69" rx="5" ry="3" fill="#ff7d9a" opacity=".5"/>`;
+  const red = angry ? `<circle cx="50" cy="59" r="29" fill="#ff2d2d" opacity=".2"/><path d="M8 34q-6-6 0-10q2-6 8-3q6-2 6 5q4 4-2 7Z" fill="#fff" ${S2}/><path d="M92 34q6-6 0-10q-2-6-8-3q-6-2-6 5q-4 4 2 7Z" fill="#fff" ${S2}/>` : '';
+  return svg(back + body + ears + `<circle cx="50" cy="59" r="30" fill="${sk}" ${S3}/>` + front + brows + eyes + `<path d="M48 66q2 2 4 0" stroke="${O}" stroke-width="2" fill="none" stroke-linecap="round"/>` + blush + mouth + ex + red, '0 0 100 124');
+}
+function chefSVG(m = 'happy'){
+  const eyes = m === 'sad' ? `<path d="M45 70q4 3 8 0M67 70q4 3 8 0" stroke="${O}" stroke-width="3" fill="none" stroke-linecap="round"/>`
+    : m === 'wow' ? `<path d="M44 70q5-7 10 0M66 70q5-7 10 0" stroke="${O}" stroke-width="3" fill="none" stroke-linecap="round"/>`
+    : `<ellipse cx="49" cy="69" rx="3.2" ry="4" fill="${O}"/><ellipse cx="71" cy="69" rx="3.2" ry="4" fill="${O}"/><circle cx="50" cy="67.6" r="1.2" fill="#fff"/><circle cx="72" cy="67.6" r="1.2" fill="#fff"/>`;
+  const mouth = m === 'sad' ? `<path d="M53 92q7-5 14 0" stroke="${O}" stroke-width="3" fill="none" stroke-linecap="round"/>` : `<path d="M52 88Q60 100 68 88Z" fill="#8a2a36" ${S2}/>`;
+  return svg(`
+    <path d="M14 172Q16 120 60 114Q104 120 106 172Z" fill="#fff" ${S3}/>
+    <path d="M38 128H82V172H38Z" fill="#ff9f1c" ${S3}/><path d="M50 146H70V158H50Z" fill="#ffb84d" ${S2}/>
+    <path d="M42 113L60 132L78 113Z" fill="#e8467c" ${S3}/>
+    <circle cx="27" cy="76" r="8" fill="#d9a06b" ${S3}/><circle cx="93" cy="76" r="8" fill="#d9a06b" ${S3}/>
+    <circle cx="60" cy="78" r="34" fill="#d9a06b" ${S3}/>
+    <path d="M27 66q2-12 10-16M93 66q-2-12-10-16" stroke="#2a1a14" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M24 52Q12 26 34 20Q36 0 60 2Q84 0 86 20Q108 26 96 52Z" fill="#fff" ${S3}/>
+    <path d="M40 22q2 12-2 22M60 10q2 16 0 30M80 22q-2 12 2 22" stroke="#d8dde0" stroke-width="3" fill="none"/>
+    <rect x="25" y="44" width="70" height="14" rx="5" fill="#fff" ${S3}/>
+    ${eyes}
+    <ellipse cx="42" cy="80" rx="6" ry="3.6" fill="#ff7d9a" opacity=".55"/><ellipse cx="78" cy="80" rx="6" ry="3.6" fill="#ff7d9a" opacity=".55"/>
+    <path d="M58 76q2 3 4 0" stroke="${O}" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <path d="M42 86q4-9 18-4q14-5 18 4q-4 1-8-2q-4 4-10 2q-6 2-10-2q-4 3-8 2Z" fill="#2a1a14"/>
+    ${mouth}`, '0 0 120 174');
+}
+
+// ---------- scenes ----------
+function sceneSVG(rid, decor = [], H = 260, par = 'xMidYMax slice', VW = 400){
+  const has = d => decor.includes(d);
+  H = Math.max(200, Math.round(H)); VW = Math.max(400, Math.round(VW));
+  const B = H - 260;
+  const sag = (x, base, amp) => base + amp * Math.sin(Math.PI * (((x % 200) + 200) % 200) / 200);
+  const rope = (base, amp) => { let d = ''; for (let x = 0; x <= VW; x += 10) d += (x ? 'L' : 'M') + x + ' ' + sag(x, base, amp).toFixed(1); return d; };
+  let bg = '', bot = '', top = '';
+  if (rid === 'mumbai'){
+    const r = mulberry32(7); let sky = 'M0 168';
+    for (let x = 0; x <= VW; x += 14 + Math.floor(r() * 18)){ const h = 108 + r() * 50; sky += `L${x} ${h.toFixed(0)}L${(x + 12).toFixed(0)} ${h.toFixed(0)}`; }
+    sky += `L${VW} 168Z`;
+    const wave = 't40 0'.repeat(Math.ceil(VW / 40) + 2);
+    bg = `<rect width="${VW}" height="${H}" fill="url(#gSkyM)"/>`;
+    bot = `<circle cx="${Math.round(VW * .78)}" cy="120" r="36" fill="#fff1b8" opacity=".9"/><path d="${sky}" fill="#9a5c8a" opacity=".5"/>
+      <rect y="160" width="${VW}" height="100" fill="url(#gSea)"/>
+      ${[176,192,210].map((y,i)=>`<path d="M${-20+i*30} ${y}q20-6 40 0${wave}" stroke="#7ad3db" stroke-width="2.5" fill="none" opacity=".6"/>`).join('')}
+      ${Array.from({length:Math.ceil(VW/18.5)},(_,i)=>`<circle cx="${8+i*18.5}" cy="${158+Math.sin(i/3)*2}" r="2.2" fill="#fff3a0"/>`).join('')}
+      <rect y="222" width="${VW}" height="38" fill="#d8cdbf"/><rect y="222" width="${VW}" height="6" fill="#efe7dc"/>`;
+    top = `<rect width="${VW}" height="30" fill="#fff"/>${Array.from({length:Math.ceil(VW/40)},(_,i)=>`<path d="M${i*40} 0H${i*40+20}V30H${i*40}Z" fill="#ff9f1c"/>`).join('')}
+      ${Array.from({length:Math.ceil(VW/20)},(_,i)=>`<circle cx="${10+i*20}" cy="30" r="10" fill="${i%2?'#fff':'#ff9f1c'}" stroke="${O}" stroke-width="2.5"/>`).join('')}
+      <path d="M0 30H${VW}" stroke="${O}" stroke-width="3"/>
+      <g transform="translate(14 ${has('toran') || has('lights') ? 116 : 52})"><rect width="112" height="38" rx="6" fill="#2d3b36" stroke="#8a5a32" stroke-width="5"/><text x="56" y="25" text-anchor="middle" font-family="'Baloo 2',sans-serif" font-weight="700" font-size="17" fill="#fff8e0">चहा · समोसा</text></g>`;
+    if (has('toran')) top += `<path d="${rope(40,20)}" stroke="#5a7a2a" stroke-width="2" fill="none"/>${Array.from({length:Math.ceil(VW/20)+1},(_,i)=>{const x=i*20,y=sag(x,40,20);return `<circle cx="${x}" cy="${y.toFixed(1)}" r="7" fill="${i%2?'#ffb703':'#fb8500'}" stroke="${O}" stroke-width="1.6"/>${i%3===0?`<path d="M${x} ${(y+6).toFixed(1)}q-5 10 0 16q5-6 0-16Z" fill="#3e9b4f" stroke="${O}" stroke-width="1.4"/>`:''}`}).join('')}`;
+    if (has('radio')) top += `<g transform="translate(${VW-100} 54)"><path d="M10 6L22-8" stroke="${O}" stroke-width="3"/><rect width="74" height="44" rx="9" fill="#d62828" stroke="${O}" stroke-width="3"/><circle cx="22" cy="23" r="13" fill="#fceee0" stroke="${O}" stroke-width="2.5"/>${dots([[16,18],[22,18],[28,18],[16,24],[22,24],[28,24],[16,30],[22,30],[28,30]],1.5,O)}<rect x="44" y="12" width="22" height="9" rx="3" fill="#ffd23f" stroke="${O}" stroke-width="2"/><circle cx="55" cy="32" r="5" fill="#fff" stroke="${O}" stroke-width="2"/></g>`;
+    if (has('lights')) top += `<path d="${rope(96,10)}" stroke="#3b1f1a" stroke-width="1.5" fill="none"/>${Array.from({length:Math.ceil(VW/25)},(_,i)=>{const x=12+i*25;return `<circle cx="${x}" cy="${(sag(x,96,10)+5).toFixed(1)}" r="4.2" fill="${['#ff5d8f','#ffd23f','#2ec4b6','#ff9f1c'][i%4]}" stroke="${O}" stroke-width="1.2"/>`}).join('')}`;
+  } else if (rid === 'chennai'){
+    bg = `<rect width="${VW}" height="${H}" fill="#8fd6c9"/><rect width="${VW}" height="12" fill="#c8102e"/><rect y="12" width="${VW}" height="6" fill="#f2c14e"/>${Array.from({length:Math.ceil(VW/10)},(_,i)=>`<circle cx="${5+i*10}" cy="24" r="1.8" fill="#fff"/>`).join('')}`;
+    bot = `<rect y="168" width="${VW}" height="92" fill="#f2c14e"/><rect y="164" width="${VW}" height="8" fill="#c8102e"/>
+      ${Array.from({length:Math.ceil(VW/10)},(_,i)=>`<circle cx="${5+i*10}" cy="182" r="2" fill="#fff"/>`).join('')}${Array.from({length:Math.ceil(VW/20)},(_,i)=>`<path d="M${i*20} 190q10 12 20 0" stroke="#fff" stroke-width="2" fill="none"/>`).join('')}
+      <g transform="translate(${VW-150} 34)"><path d="M0 120V40Q0 0 50 0Q100 0 100 40V120Z" fill="#ffd9a8" stroke="${O}" stroke-width="4"/>
+        <path d="M22 120L28 94H72L78 120ZM30 94L35 72H65L70 94ZM37 72L41 54H59L63 72ZM43 54L46 40H54L57 54Z" fill="#d9893b" stroke="${O}" stroke-width="2.5"/>
+        <circle cx="50" cy="34" r="4" fill="#ffd23f" stroke="${O}" stroke-width="2"/><path d="M0 70H100M50 0V120" stroke="${O}" stroke-width="3"/></g>
+      <path d="M-10 160Q20 80 70 60Q40 110 30 170Z" fill="url(#gLeaf)" stroke="${O}" stroke-width="3"/><path d="M-4 150Q30 100 62 66" stroke="#c8f0b4" stroke-width="2" fill="none"/>`;
+    top = `<g transform="translate(20 32)"><rect width="190" height="52" rx="10" fill="#c8102e" stroke="${O}" stroke-width="4"/>
+        <text x="95" y="33" text-anchor="middle" font-family="'Baloo Thambi 2','Baloo 2',sans-serif" font-weight="800" font-size="24" fill="#ffd23f">டிபன் ரூம்</text>
+        <text x="95" y="47" text-anchor="middle" font-family="'Baloo 2',sans-serif" font-weight="700" font-size="11" fill="#fff" letter-spacing="2">MYLAPORE · SINCE 1962</text></g>`;
+    if (has('kolam')) bot += `<g transform="translate(130 110)" fill="none" stroke="#fff" stroke-width="2.5">${[0,1,2,3].map(i=>`<path d="M0 0q20-26 40 0q-20 26-40 0Z" transform="rotate(${i*90}) translate(4 0)"/>`).join('')}<circle r="5" fill="#fff"/>${dots([[22,22],[-22,22],[22,-22],[-22,-22]],2.5,'#fff')}</g>`;
+    if (has('jasmine')) top += [VW-168,VW-100,VW-44,VW-10].map((x,k)=>`<path d="M${x} 18V${70+k%3*10}" stroke="#3e9b4f" stroke-width="1.5"/>${Array.from({length:7},(_,j)=>`<circle cx="${x+(j%2?2.5:-2.5)}" cy="${24+j*9}" r="3.6" fill="#fff" stroke="#c9c9c9" stroke-width="1"/>`).join('')}`).join('');
+    if (has('lamp')) bot += `<g transform="translate(206 88)"><path d="M12 0q-5-10 0-16q5 6 0 16Z" fill="#ffb703" stroke="#e85d04" stroke-width="1.5"/><path d="M0 6H24L20 14H4Z" fill="url(#gBrass)" stroke="${O}" stroke-width="2.5"/><rect x="10" y="14" width="4" height="46" fill="url(#gBrass)" stroke="${O}" stroke-width="2"/><path d="M-2 66Q12 56 26 66V72H-2Z" fill="url(#gBrass)" stroke="${O}" stroke-width="2.5"/></g>`;
+  } else {
+    let bricks = '';
+    for (let y = 0; y < H; y += 16) for (let x = (y / 16) % 2 ? -18 : 0; x < VW; x += 36) bricks += `<rect x="${x+1}" y="${y+1}" width="34" height="14" rx="2" fill="${(x*7+y*3)%5?'#b9533a':'#a8472f'}"/>`;
+    const mid = Math.round(VW / 2);
+    bg = `<rect width="${VW}" height="${H}" fill="#e3c9a8"/>${bricks}`;
+    bot = `${[[40,60],[VW-128,60]].map(([x,y])=>`<g transform="translate(${x} ${y})"><path d="M0 110V44Q0 0 44 0Q88 0 88 44V110Z" fill="#ffe1a6" stroke="${O}" stroke-width="4"/>
+        <g opacity=".85">${Array.from({length:6},(_,i)=>`<path d="M${8+i*14} 110V40" stroke="#c48a3a" stroke-width="2"/>`).join('')}${Array.from({length:6},(_,i)=>`<path d="M0 ${42+i*14}H88" stroke="#c48a3a" stroke-width="2"/>`).join('')}</g>
+        <path d="M0 110V44Q0 0 44 0Q88 0 88 44V110" fill="none" stroke="${O}" stroke-width="4"/></g>`).join('')}
+      <rect x="${mid-60}" y="132" width="120" height="8" rx="3" fill="#6b3622" stroke="${O}" stroke-width="2.5"/>
+      ${[mid-40,mid,mid+40].map(x=>`<path d="M${x-14} 132Q${x-16} 108 ${x} 106Q${x+16} 108 ${x+14} 132Z" fill="url(#gCopper)" stroke="${O}" stroke-width="2.5"/><ellipse cx="${x}" cy="106" rx="9" ry="3" fill="#7a3a1a" stroke="${O}" stroke-width="2"/>`).join('')}`;
+    top = `<g transform="translate(${mid-60} 22)"><rect width="120" height="46" rx="10" fill="#6a1b2a" stroke="#e2b04a" stroke-width="4"/><text x="60" y="31" text-anchor="middle" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="22" fill="#ffd23f">तंदूर हाउस</text></g>`;
+    if (has('lanterns')) top += [80,VW-80].map(x=>`<path d="M${x} 0V40" stroke="${O}" stroke-width="2"/><ellipse cx="${x}" cy="68" rx="26" ry="30" fill="url(#gGlow)" opacity=".7"/><path d="M${x-12} 42H${x+12}L${x+16} 56L${x+12} 80H${x-12}L${x-16} 56Z" fill="url(#gBrass)" stroke="${O}" stroke-width="2.5"/>${dots([[x-6,54],[x,54],[x+6,54],[x-4,66],[x+4,66]],2,'#fff6c2')}`).join('');
+    if (has('phulkari')){ let d = `M0 0H${VW}V10`; for (let x = VW; x > 0; x -= 100) d += `Q${x-50} 46 ${x-100} 10`; top += `<path d="${d}Z" fill="#e8467c" stroke="${O}" stroke-width="3"/>${Array.from({length:Math.ceil(VW/100)},(_,i)=>{const x=50+i*100;return `<path d="M${x-8} 18L${x} 10L${x+8} 18L${x} 26Z" fill="#ffd23f" stroke="${O}" stroke-width="1.5"/><path d="M${x-22} 12L${x-16} 8L${x-10} 12L${x-16} 16Z" fill="#ff9f1c"/><path d="M${x+10} 12L${x+16} 8L${x+22} 12L${x+16} 16Z" fill="#2ec4b6"/>`}).join('')}`; }
+    if (has('cooler')) bot += `<g transform="translate(${VW-64} 100)"><rect width="58" height="80" rx="6" fill="#c9d3da" stroke="${O}" stroke-width="3"/><circle cx="29" cy="34" r="21" fill="#7c8a94" stroke="${O}" stroke-width="2.5"/><g style="transform-origin:29px 34px;animation:spin 1.2s linear infinite"><path d="M29 34L29 16M29 34L45 42M29 34L13 42" stroke="#eef3f6" stroke-width="7" stroke-linecap="round"/></g><circle cx="29" cy="34" r="4" fill="${O}"/>${Array.from({length:4},(_,i)=>`<path d="M8 ${62+i*4}H50" stroke="#8e9aa4" stroke-width="2"/>`).join('')}</g>`;
+  }
+  return `<svg viewBox="0 0 ${VW} ${H}" preserveAspectRatio="${par}" aria-hidden="true">${bg}<g transform="translate(0 ${B})">${bot}</g>${top}</svg>`;
+}
+function bunting(){
+  const cols = ['#e8467c','#ffd23f','#ff9f1c','#fff','#2ec4b6'], W = 1600;
+  const y = x => 8 + 16 * Math.sin(Math.PI * ((x % 200) / 200));
+  let rope = ''; for (let x = 0; x <= W; x += 10) rope += (x ? 'L' : 'M') + x + ' ' + y(x).toFixed(1);
+  let flags = ''; let i = 0;
+  for (let x = 6; x < W; x += 25, i++){ const yy = y(x); flags += `<path d="M${x-10} ${yy.toFixed(1)}L${x+10} ${yy.toFixed(1)}L${x} ${(yy+26).toFixed(1)}Z" fill="${cols[i%5]}" stroke="${O}" stroke-width="2.5" stroke-linejoin="round"/>`; }
+  return `<svg viewBox="0 0 ${W} 58" preserveAspectRatio="xMidYMin slice" aria-hidden="true"><path d="${rope}" stroke="${O}" stroke-width="2.5" fill="none"/>${flags}</svg>`;
+}
+
+// ---------- game data ----------
+const NAME = { samosa:'Samosa', vada:'Batata vada', pav:'Pav', chai:'Masala chai', green:'Hari chutney', imli:'Imli chutney', lasun:'Lasun chutney', mirchi:'Fried mirchi', vadapav:'Vada pav',
+  dosa:'Dosa', masala:'Aloo masala', sambar:'Sambar', coconut:'Coconut chutney', podi:'Podi & ghee', idli:'Idli', medu:'Medu vada', kaapi:'Filter kaapi',
+  naan:'Naan', butter:'Butter', garlic:'Garlic', makhani:'Butter chicken', dal:'Dal makhani', cream:'Malai', dhania:'Dhania', tikka:'Paneer tikka', mint:'Pudina chutney', onion:'Onion & lemon', biryani:'Dum biryani', raita:'Raita', lassi:'Mango lassi' };
+const COOK = {
+  samosa:{t:5,h:6,base:1}, vada:{t:6,h:6,addTo:'pav'}, chai:{t:5,h:9,drink:1},
+  dosa:{t:6,h:6,base:1}, idli:{t:7,h:10,base:1}, medu:{t:5,h:6,base:1}, kaapi:{t:4,h:10,drink:1},
+  naan:{t:5,h:5,base:1}, tikka:{t:7,h:6,base:1}, makhani:{t:8,h:11,base:1}, dal:{t:8,h:11,base:1}, biryani:{t:11,h:14,base:1}, lassi:{t:4,h:1e9,drink:1},
+};
+const DISH = {
+  samosa:{base:'samosa',opt:['green','imli'],price:18}, vadapav:{base:'pav',req:['vada'],opt:['lasun','mirchi'],price:22}, chai:{drink:'chai',price:15},
+  dosa:{base:'dosa',opt:['masala','coconut','sambar','podi'],price:50}, idli:{base:'idli',opt:['coconut','sambar','podi'],price:40}, medu:{base:'medu',opt:['coconut','sambar'],price:35}, kaapi:{drink:'kaapi',price:30},
+  naan:{base:'naan',opt:['butter','garlic'],price:60}, lassi:{drink:'lassi',price:90}, makhani:{base:'makhani',opt:['cream','dhania'],price:340}, dal:{base:'dal',opt:['cream','dhania'],price:260},
+  tikka:{base:'tikka',opt:['mint','onion'],price:280}, biryani:{base:'biryani',opt:['raita'],price:320},
+};
+const ADD = { green:{p:4,k:'top'}, imli:{p:4,k:'top'}, vada:{p:0,k:'in'}, lasun:{p:3,k:'in'}, mirchi:{p:3,k:'side'}, masala:{p:20,k:'in'}, coconut:{p:8,k:'side'}, sambar:{p:10,k:'side'}, podi:{p:10,k:'side'},
+  butter:{p:15,k:'top'}, garlic:{p:20,k:'top'}, cream:{p:20,k:'top'}, dhania:{p:10,k:'top'}, mint:{p:20,k:'side'}, onion:{p:10,k:'side'}, raita:{p:40,k:'side'} };
+const ACCEPT = { samosa:['green','imli'], pav:['vada','lasun','mirchi'], dosa:['masala','coconut','sambar','podi'], idli:['coconut','sambar','podi'], medu:['coconut','sambar'],
+  naan:['butter','garlic'], makhani:['cream','dhania'], dal:['cream','dhania'], tikka:['mint','onion'], biryani:['raita'] };
+
+const REST = {
+  mumbai: { id:'mumbai', name:'Marine Drive Tapri', city:'Mumbai', blurb:'Cutting chai, samosa and vada pav by the sea.', plate:'steel', bonus:0, music:'mumbai',
+    stations:[
+      {id:'kadai', name:'Kadai', vessel:'kadai', slots:2, fx:'fry', need:['samosa','vadapav'], up:['Wider iron kadai','Bigger gas burner','Heavy cast-iron kadai']},
+      {id:'patila', name:'Chai patila', vessel:'patila', slots:2, fx:'steamy', drink:'chai', need:['chai'], up:['Extra patila','Double burner','Thick-base patila']},
+    ],
+    sources:[ {id:'samosa',kind:'raw',to:'kadai',need:'samosa',label:'Samosa'}, {id:'vada',kind:'raw',to:'kadai',need:'vadapav',label:'Vada'}, {id:'pav',kind:'base',need:'vadapav',label:'Pav'},
+      {id:'green',kind:'add',need:'green',label:'Hari'}, {id:'imli',kind:'add',need:'imli',label:'Imli'}, {id:'lasun',kind:'add',need:'lasun',label:'Lasun'}, {id:'mirchi',kind:'add',need:'mirchi',label:'Mirchi'} ],
+    plateUp:'Extra steel plate', decor:[{id:'toran',name:'Marigold toran'},{id:'radio',name:'Transistor radio'},{id:'lights',name:'Fairy lights'}],
+    cost:{ st:[120,260,420], pl:[150,350], dec:[100,220,380] },
+    happy:['Ekdum jhakaas!','Mast, boss!','Wah bhau!','Full paisa vasool!','Ek number!'], mad:['Arre, kitna time!','Chalo, train aa gayi!','Bas kya, yaar!'] },
+  chennai: { id:'chennai', name:'Mylapore Tiffin Room', city:'Chennai', blurb:'Crisp dosa, soft idli and frothy filter kaapi.', plate:'leaf', bonus:5, music:'chennai',
+    stations:[
+      {id:'tawa', name:'Dosa tawa', vessel:'tawa', slots:2, fx:'fry', need:['dosa'], up:['Second tawa','Cast-iron tawa','Well-seasoned tawa']},
+      {id:'steamer', name:'Idli steamer', vessel:'steamer', slots:2, fx:'steamy', need:['idli'], up:['Extra idli plate','Pressure steamer','Cloth-lined moulds']},
+      {id:'kadai', name:'Kadai', vessel:'kadai', slots:2, fx:'fry', need:['medu'], up:['Wider kadai','Bigger burner','Heavy iron kadai']},
+      {id:'filter', name:'Kaapi filter', vessel:'filter', slots:2, fx:'steamy', drink:'kaapi', need:['kaapi'], up:['Extra filter','Pre-heated milk','Brass davara']},
+    ],
+    sources:[ {id:'dosa',kind:'raw',to:'tawa',need:'dosa',label:'Batter'}, {id:'idli',kind:'raw',to:'steamer',need:'idli',label:'Idli mix'}, {id:'medu',kind:'raw',to:'kadai',need:'medu',label:'Vada mix'},
+      {id:'masala',kind:'add',need:'masala',label:'Masala'}, {id:'coconut',kind:'add',need:'coconut',label:'Coconut'}, {id:'sambar',kind:'add',need:'sambar',label:'Sambar'}, {id:'podi',kind:'add',need:'podi',label:'Podi'} ],
+    plateUp:'Extra banana leaf', decor:[{id:'kolam',name:'Kolam by the door'},{id:'jasmine',name:'Jasmine strings'},{id:'lamp',name:'Brass kuthuvilakku'}],
+    cost:{ st:[300,650,1000], pl:[400,900], dec:[300,600,1000] },
+    happy:['Super!','Romba nalla!','Semma taste!','Aaha, first class!'], mad:['Aiyyo, so slow!','Time aachu!','Enna, sir?'] },
+  delhi: { id:'delhi', name:'Chandni Chowk Tandoor', city:'Delhi', blurb:'Smoky naan, butter chicken and slow dum biryani.', plate:'thali', bonus:9, music:'delhi',
+    stations:[
+      {id:'tandoor', name:'Tandoor', vessel:'tandoor', slots:2, fx:'fry', need:['naan','tikka'], up:['Bigger tandoor','Charcoal upgrade','Clay-lined walls']},
+      {id:'handi', name:'Handi', vessel:'handi', slots:2, fx:'steamy', need:['makhani','dal'], up:['Second handi','Dum lid','Copper base']},
+      {id:'dum', name:'Dum pot', vessel:'dum', slots:1, fx:'steamy', need:['biryani'], up:['Extra dum pot','Wood-fired dum','Sealed dough lid']},
+      {id:'blender', name:'Lassi', vessel:'blender', slots:2, fx:'', drink:'lassi', need:['lassi'], up:['Extra glass','Steel blender']},
+    ],
+    sources:[ {id:'naan',kind:'raw',to:'tandoor',need:'naan',label:'Dough'}, {id:'tikka',kind:'raw',to:'tandoor',need:'tikka',label:'Tikka'}, {id:'makhani',kind:'raw',to:'handi',need:'makhani',label:'Chicken'},
+      {id:'dal',kind:'raw',to:'handi',need:'dal',label:'Dal'}, {id:'biryani',kind:'raw',to:'dum',need:'biryani',label:'Biryani'},
+      {id:'butter',kind:'add',need:'butter',label:'Butter'}, {id:'garlic',kind:'add',need:'garlic',label:'Garlic'}, {id:'cream',kind:'add',need:'cream',label:'Malai'}, {id:'dhania',kind:'add',need:'dhania',label:'Dhania'},
+      {id:'mint',kind:'add',need:'mint',label:'Pudina'}, {id:'onion',kind:'add',need:'onion',label:'Onion'}, {id:'raita',kind:'add',need:'raita',label:'Raita'} ],
+    plateUp:'Extra brass thali', decor:[{id:'lanterns',name:'Brass lanterns'},{id:'phulkari',name:'Phulkari drapes'},{id:'cooler',name:'Desert cooler'}],
+    cost:{ st:[1200,2500,4000], pl:[2000,4000], dec:[1500,3000,5000] },
+    happy:['Ekdum mast!','Wah ji wah!','Kya baat hai!','Shandaar, paaji!'], mad:['Oye, itni der?','Chalo ji, bye!','Kya yaar!'] },
+};
+const ORDER = ['mumbai','chennai','delhi'];
+const LEVELS = {
+  mumbai: [ {u:['samosa'],n:6,k:[1,1]}, {u:['chai'],n:8,k:[1,2]}, {u:['green'],n:9,k:[1,2]}, {u:['imli'],n:10,k:[1,2]}, {u:['vadapav'],n:10,k:[1,2]}, {u:['lasun'],n:11,k:[1,3]}, {u:['mirchi'],n:12,k:[1,3]}, {u:[],n:14,k:[1,3],rush:1} ],
+  chennai: [ {u:['dosa','coconut'],n:6,k:[1,1]}, {u:['kaapi'],n:8,k:[1,2]}, {u:['masala'],n:9,k:[1,2]}, {u:['idli'],n:10,k:[1,2]}, {u:['sambar'],n:10,k:[1,2]}, {u:['medu'],n:11,k:[1,3]}, {u:['podi'],n:12,k:[1,3]}, {u:[],n:14,k:[1,3],rush:1} ],
+  delhi: [ {u:['naan','butter'],n:6,k:[1,1]}, {u:['lassi'],n:8,k:[1,2]}, {u:['makhani','cream'],n:9,k:[1,2]}, {u:['garlic','dhania'],n:10,k:[1,2]}, {u:['dal'],n:10,k:[1,2]}, {u:['tikka','mint'],n:11,k:[1,3]}, {u:['biryani','raita'],n:12,k:[1,3]}, {u:['onion'],n:14,k:[1,3],rush:1} ],
+};
+const INTRO = {
+  samosa:'Spiced potato and peas folded in pastry. Tap the tray to drop one in the kadai, then pull it out when golden. It burns fast!',
+  chai:'Assam tea, milk, ginger and elaichi boiled in a patila. Tap an empty patila to brew, then tap the chai to serve before it boils over.',
+  green:'Coriander, mint and green chilli. Tap it to drizzle on a samosa sitting on a plate.',
+  imli:'Sweet-sour tamarind and jaggery. Some customers want both chutneys.',
+  vadapav:'Mumbai’s favourite. Put a pav on a plate, fry a batata vada, then tap the golden vada to tuck it into the pav.',
+  lasun:'Dry garlic and coconut chutney that gives vada pav its kick.',
+  mirchi:'A salted, fried green chilli served on the side of a vada pav.',
+  dosa:'Fermented rice and urad batter spread thin on a hot tawa. Tap the batter to pour one.',
+  coconut:'Fresh coconut ground with green chilli, finished with a mustard-seed and curry-leaf tadka.',
+  kaapi:'Strong chicory decoction with frothy milk, poured tumbler to davara. Tap a filter to brew; serve it hot.',
+  masala:'Potato with onion, turmeric and mustard seeds. Add it to a dosa to make a masala dosa.',
+  idli:'Soft steamed rice cakes. Tap the idli mix to fill the steamer. They go hard if left too long.',
+  sambar:'Toor dal and tamarind stew with drumstick and shallots. Goes with dosa, idli and vada.',
+  medu:'Crisp urad dal doughnut with a fluffy inside, fried in the kadai.',
+  podi:'“Gunpowder” — roasted lentils and red chilli ground coarse, with a spoon of ghee.',
+  naan:'Slap the dough onto the hot tandoor wall. Pull it off when it puffs and chars.',
+  butter:'Brush melted butter on a hot naan to make butter naan.',
+  lassi:'Thick curd blended with Alphonso mango pulp. Tap the blender. Lassi never spoils.',
+  makhani:'Tandoori chicken simmered in a tomato, butter and kasuri methi gravy. Tap the chicken to start a handi.',
+  cream:'A swirl of fresh malai on top of a curry.',
+  garlic:'Chopped garlic and dhania pressed into naan. With butter too, it’s the classic garlic butter naan.',
+  dhania:'Fresh coriander leaves to finish a curry.',
+  dal:'Whole black urad and rajma slow-cooked with butter and cream. It shares the handi with butter chicken.',
+  tikka:'Paneer, onion and capsicum marinated in spiced curd and roasted in the tandoor.',
+  mint:'Pudina chutney: mint, coriander and curd. Served alongside tikka.',
+  biryani:'Rice and masala layered in a handi, sealed with dough and cooked on dum. Takes the longest, so start early!',
+  raita:'Cool curd with cucumber and roasted jeera, served with biryani.',
+  onion:'Sliced onion rings and a wedge of lemon, the classic tikka side.',
+};
+const TILEART = id => RAWTILE[id] ? RAWTILE[id]() : SIDE[id] ? SIDE[id]() : '';
+function introArt(u){
+  if (u === 'vadapav') return dishInner('pav',['vada']);
+  if (u === 'chai' || u === 'kaapi' || u === 'lassi') return ART[u]();
+  if (u === 'dosa') return dosaRoll(false);
+  if (DISH[u]) return ART[u]('cooked');
+  return TILEART(u);
+}
+
+// ---------- save ----------
+const SAVE_KEY = 'masala-rush-save-v1';
+function defaultSave(){ return { v:1, coins:0, stars:{mumbai:[],chennai:[],delhi:[]}, best:{mumbai:[],chennai:[],delhi:[]}, up:{mumbai:{},chennai:{},delhi:{}}, music:true, sfx:true, t:0 }; }
+let S = defaultSave();
+function mergeSave(raw){
+  const d = defaultSave();
+  if (!raw || typeof raw !== 'object') return d;
+  for (const k of ['coins','music','sfx','t']) if (raw[k] !== undefined) d[k] = raw[k];
+  for (const r of ORDER){
+    if (raw.stars && Array.isArray(raw.stars[r])) d.stars[r] = raw.stars[r].map(n => +n || 0);
+    if (raw.best && Array.isArray(raw.best[r])) d.best[r] = raw.best[r].map(n => +n || 0);
+    if (raw.up && raw.up[r] && typeof raw.up[r] === 'object') d.up[r] = { ...raw.up[r] };
+  }
+  d.coins = Math.max(0, +d.coins || 0);
+  return d;
+}
+function loadLocal(){ try { const j = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); if (j) S = mergeSave(j); } catch (e) {} }
+function saveLocal(){ try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {} }
+let cloudRef = null, cloudBusy = false, cloudDirty = false;
+async function cloudPush(){
+  if (!cloudRef) return;
+  if (cloudBusy){ cloudDirty = true; return; }
+  cloudBusy = true;
+  try { await cloudRef.set({ save: JSON.stringify(S), t: S.t }); } catch (e) { if (e && (e.code === 'invalid_argument' || e.code === 'revoked' || e.code === 'not_granted')) cloudRef = null; }
+  cloudBusy = false;
+  if (cloudDirty){ cloudDirty = false; cloudPush(); }
+}
+function persist(){ S.t = Date.now(); saveLocal(); cloudPush(); }
+async function initCloud(){
+  try {
+    if (!window.claude || typeof window.claude.use !== 'function') return;
+    const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
+    if (!db || !user) return;
+    const id = await user.id();
+    if (!id) return;
+    const ref = db.doc('data/users/' + id + '/save');
+    const snap = await ref.get();
+    cloudRef = ref;
+    if (snap.exists){
+      const d = snap.data();
+      if (d && typeof d.save === 'string'){
+        const remote = mergeSave(JSON.parse(d.save));
+        if ((remote.t || 0) > (S.t || 0) && !G){ S = remote; saveLocal(); applySound(); refreshMenus(); }
+        else if ((S.t || 0) > (remote.t || 0)) cloudPush();
+      }
+    } else if (S.t) cloudPush();
+  } catch (e) { /* cloud save is optional */ }
+}
+
+// ---------- audio ----------
+const SFX = (() => {
+  let ctx = null, master, mus, fx, noiseBuf, sizzleG, timer = null, nextT = 0, step = 0, track = null;
+  const TR = {
+    menu:   { bpm: 96, scale:[0,2,4,7,9], tabla:'DgNtNkDN', mel:[[5,2],[4,1],[3,1],[2,2],[3,2],[4,1],[5,1],[6,2],[5,4],[7,3],[6,1],[5,2],[6,2],[5,2],[3,2],[2,4],[3,2],[2,1],[1,1],[0,4],[1,2],[2,2],[4,4],[2,2],[1,2],[0,4]] },
+    mumbai: { bpm: 116, scale:[0,2,4,7,9], tabla:'DgNtNkDN', mel:[[5,2],[4,1],[3,1],[2,2],[3,2],[4,1],[5,1],[6,2],[5,4],[7,2],[6,1],[5,1],[4,2],[3,2],[2,1],[3,1],[2,1],[1,1],[0,4],[7,3],[6,1],[5,2],[6,2],[5,1],[4,1],[3,2],[2,4],[3,2],[5,2],[6,2],[5,2],[4,2],[3,1],[2,1],[0,4]] },
+    chennai:{ bpm: 104, scale:[0,2,4,7,9], tabla:'DNkNDgNk', mel:[[0,2],[2,2],[3,2],[4,2],[5,3],[4,1],[3,4],[4,2],[5,1],[6,1],[7,2],[5,2],[4,2],[3,2],[2,4],[3,2],[2,1],[1,1],[2,2],[4,2],[3,2],[2,2],[1,4],[0,2],[1,2],[2,2],[3,2],[2,2],[1,2],[0,4]] },
+    delhi:  { bpm: 92, scale:[0,2,4,6,7,9,11], tabla:'DgNtNkDN', mel:[[7,2],[6,2],[5,2],[4,2],[5,3],[4,1],[3,4],[2,2],[3,2],[5,2],[4,2],[3,2],[2,2],[1,4],[2,2],[4,2],[5,2],[7,2],[8,3],[7,1],[6,4],[5,2],[4,1],[3,1],[2,2],[1,2],[0,8]] },
+  };
+  for (const k in TR){ const T = TR[k]; T.notes = []; for (const [d, len] of T.mel){ T.notes.push({ d, len }); for (let i = 1; i < len; i++) T.notes.push(null); } }
+  function init(){
+    if (ctx){ if (ctx.state !== 'running') ctx.resume().catch(()=>{}); return; }
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+    try { ctx = new AC(); } catch (e) { return; }
+    master = ctx.createGain(); master.gain.value = .9; master.connect(ctx.destination);
+    mus = ctx.createGain(); mus.gain.value = S.music ? .5 : 0; mus.connect(master);
+    fx = ctx.createGain(); fx.gain.value = S.sfx ? .85 : 0; fx.connect(master);
+    noiseBuf = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
+    const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    const src = ctx.createBufferSource(); src.buffer = noiseBuf; src.loop = true;
+    const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 5200; bp.Q.value = .6;
+    const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 2400;
+    sizzleG = ctx.createGain(); sizzleG.gain.value = 0;
+    src.connect(bp); bp.connect(hp); hp.connect(sizzleG); sizzleG.connect(fx); src.start();
+    if (ctx.state !== 'running') ctx.resume().catch(()=>{});
+    if (track){ const t = track; track = null; music(t); }
+  }
+  function tone(f, dur, type = 'sine', vol = .2, when = 0, glide = null, dest = fx){
+    if (!ctx) return; const t = ctx.currentTime + when;
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, t); if (glide) o.frequency.exponentialRampToValueAtTime(glide, t + dur);
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .01); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g); g.connect(dest); o.start(t); o.stop(t + dur + .05);
+  }
+  function noise(dur, f, q, vol, when = 0, type = 'bandpass', dest = fx){
+    if (!ctx) return; const t = ctx.currentTime + when;
+    const s = ctx.createBufferSource(); s.buffer = noiseBuf;
+    const fl = ctx.createBiquadFilter(); fl.type = type; fl.frequency.value = f; fl.Q.value = q;
+    const g = ctx.createGain(); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    s.connect(fl); fl.connect(g); g.connect(dest); s.start(t, Math.random()); s.stop(t + dur + .05);
+  }
+  const fxs = {
+    tap(){ tone(720, .06, 'sine', .12, 0, 1000); },
+    drop(){ noise(.55, 4200, .7, .32); tone(190, .09, 'sine', .18, 0, 90); },
+    plop(){ tone(380, .12, 'sine', .2, 0, 200); },
+    pour(){ noise(.5, 900, 1.2, .18); tone(300, .4, 'sine', .05, 0, 520); },
+    ready(){ tone(1318, .18, 'triangle', .16); tone(1760, .28, 'triangle', .12, .08); },
+    warn(){ tone(880, .08, 'square', .05); tone(880, .08, 'square', .05, .13); },
+    burnt(){ noise(.7, 700, .5, .25, 0, 'lowpass'); tone(220, .45, 'sawtooth', .05, 0, 90); },
+    add(){ tone(880, .07, 'sine', .14, 0, 1320); noise(.08, 3000, 1, .06); },
+    serve(){ tone(1046, .08, 'triangle', .15); tone(1568, .14, 'triangle', .15, .06); },
+    cash(){ noise(.05, 6000, 1, .18); tone(2093, .1, 'triangle', .13, .03); tone(2637, .3, 'triangle', .13, .1); },
+    bell(){ tone(1568, .35, 'sine', .07); tone(2349, .5, 'sine', .05, .06); },
+    angry(){ tone(330, .38, 'sawtooth', .07, 0, 140); },
+    nope(){ tone(240, .1, 'square', .05); tone(190, .14, 'square', .05, .09); },
+    trash(){ noise(.25, 260, .7, .4, 0, 'lowpass'); tone(110, .15, 'sine', .2, 0, 60); },
+    star(i){ tone([784, 988, 1175][i] || 1175, .35, 'triangle', .18); tone(([784, 988, 1175][i] || 1175) * 2, .3, 'sine', .06, .02); },
+    win(){ [523, 587, 659, 784, 880, 1046].forEach((f, i) => tone(f, .25, 'triangle', .14, i * .09)); },
+    lose(){ [392, 349, 330, 262].forEach((f, i) => tone(f, .3, 'triangle', .12, i * .15)); },
+    buy(){ tone(988, .08, 'triangle', .14); tone(1318, .1, 'triangle', .14, .07); tone(1976, .25, 'triangle', .12, .14); },
+  };
+  function play(n, a){ if (!ctx || !S.sfx) return; try { fxs[n] && fxs[n](a); } catch (e) {} }
+  function sizzle(v){ if (ctx && sizzleG) sizzleG.gain.setTargetAtTime(S.sfx ? v : 0, ctx.currentTime, .2); }
+  // --- music ---
+  const SA = 261.63;
+  const fq = (T, d) => { const n = T.scale.length, o = Math.floor(d / n), i = ((d % n) + n) % n; return SA * Math.pow(2, o + T.scale[i] / 12); };
+  function harm(f, t, dur){
+    const g = ctx.createGain(), lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1700; lp.Q.value = .4;
+    g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(.055, t + .04); g.gain.setValueAtTime(.05, t + Math.max(.05, dur - .07)); g.gain.linearRampToValueAtTime(.0001, t + dur);
+    for (const det of [-5, 5]){ const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f; o.detune.value = det; o.connect(lp); o.start(t); o.stop(t + dur + .05); }
+    lp.connect(g); g.connect(mus);
+  }
+  function drum(b, t){
+    const tn = (f, d, v, type = 'sine', gl) => { const o = ctx.createOscillator(), g = ctx.createGain(); o.type = type; o.frequency.setValueAtTime(f, t); if (gl) o.frequency.exponentialRampToValueAtTime(gl, t + d); g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.0001, t + d); o.connect(g); g.connect(mus); o.start(t); o.stop(t + d + .02); };
+    const nz = (f, d, v) => { const s = ctx.createBufferSource(); s.buffer = noiseBuf; const fl = ctx.createBiquadFilter(); fl.type = 'bandpass'; fl.frequency.value = f; fl.Q.value = 1.5; const g = ctx.createGain(); g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.0001, t + d); s.connect(fl); fl.connect(g); g.connect(mus); s.start(t, Math.random()); s.stop(t + d + .02); };
+    if (b === 'D' || b === 'g'){ tn(110, .32, .32, 'sine', 70); }
+    if (b === 'D' || b === 'N'){ tn(760, .22, .11, 'triangle'); tn(1520, .12, .04); }
+    if (b === 't'){ tn(980, .07, .08, 'triangle'); }
+    if (b === 'k'){ nz(1400, .05, .12); }
+  }
+  function sched(){
+    if (!ctx || !track) return;
+    const T = TR[track], e = 60 / T.bpm / 2;
+    while (nextT < ctx.currentTime + .2){
+      const pos = step % 8;
+      drum(T.tabla[pos], nextT);
+      if (pos === 0){ [[0,-12],[2,-5],[4,0],[6,-12]].forEach(([p, semi]) => { const o = ctx.createOscillator(), g = ctx.createGain(); o.type = 'triangle'; o.frequency.value = SA / 2 * Math.pow(2, semi / 12); const tt = nextT + p * e; g.gain.setValueAtTime(.0001, tt); g.gain.linearRampToValueAtTime(.035, tt + .03); g.gain.exponentialRampToValueAtTime(.0001, tt + e * 2.4); o.connect(g); g.connect(mus); o.start(tt); o.stop(tt + e * 2.5); }); }
+      const n = T.notes[step % T.notes.length];
+      if (n) harm(fq(T, n.d), nextT, n.len * e * .95);
+      nextT += e; step++;
+    }
+  }
+  function music(name){
+    if (track === name && timer) return;
+    track = name;
+    if (!ctx) return;
+    step = 0; nextT = ctx.currentTime + .12;
+    if (!timer) timer = setInterval(sched, 40);
+  }
+  function setMusic(on){ if (mus) mus.gain.setTargetAtTime(on ? .5 : 0, ctx.currentTime, .1); }
+  function setSfx(on){ if (fx) fx.gain.setTargetAtTime(on ? .85 : 0, ctx.currentTime, .05); }
+  function suspend(){ if (ctx && ctx.state === 'running') ctx.suspend().catch(()=>{}); }
+  function resume(){ if (ctx && ctx.state !== 'running') ctx.resume().catch(()=>{}); }
+  return { init, play, sizzle, music, setMusic, setSfx, suspend, resume };
+})();
+
+// ---------- stage & screens ----------
+const app = $('#app'), stage = $('#stage');
+let SCALE = 1;
+let LAND = false, THUMB = false, SHRINK = 1;
+function fit(){
+  const W = app.clientWidth, H = app.clientHeight;
+  const land = W / H > 1.15, thumb = W / H >= 1.7;
+  let s, lw;
+  if (thumb){ s = H / 420; if (W / s < 860) s = W / 860; }
+  else if (land){ s = H / 460; if (W / s < 760) s = W / 760; }
+  else { s = Math.min(W / 400, H / 640); }
+  s *= SHRINK;
+  if (!land) lw = clamp(W / s, 400, 560); else lw = W / s;
+  SCALE = s; LAND = land; THUMB = thumb;
+  stage.classList.toggle('land', land);
+  stage.classList.toggle('thumb', thumb);
+  stage.style.transform = `scale(${s})`;
+  stage.style.width = lw + 'px';
+  stage.style.height = (H / s) + 'px';
+  stage.style.left = ((W - lw * s) / 2) + 'px';
+}
+// In the kitchen, shrink the whole stage a little if the stations and pantry would not fit the screen height.
+function fitGame(){
+  SHRINK = 1; fit();
+  if (SCREEN !== 'game' || !G) return;
+  const scr = $('#scr-game');
+  const pad = el => { const cs = getComputedStyle(el); return parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom); };
+  const colNeed = el => { const k = [...el.children]; const gap = parseFloat(getComputedStyle(el).rowGap) || 0;
+    if (getComputedStyle(el).display === 'grid'){ const cols = +getComputedStyle(el).getPropertyValue('--pc') || 3, rows = Math.ceil(k.length / cols); return rows * (k[0] ? k[0].offsetHeight : 0) + (rows - 1) * gap + pad(el); }
+    return k.reduce((a, e) => a + e.offsetHeight, 0) + Math.max(0, k.length - 1) * gap + pad(el); };
+  for (let k = 0; k < 4; k++){
+    let need;
+    if (THUMB){
+      const hint = $('#hint');
+      need = $('.hud').offsetHeight + Math.max(colNeed($('#stations')), colNeed($('#pantry')), (hint.hidden ? 0 : hint.offsetHeight) + 210 + $('.counter').offsetHeight);
+    } else {
+      const fixed = [...scr.children].filter(e => e.id !== 'scene' && !e.hidden).reduce((a, e) => a + e.offsetHeight, 0);
+      need = fixed + (LAND ? 112 : 196);
+    }
+    const have = parseFloat(stage.style.height);
+    if (need <= have + 1) break;
+    SHRINK *= have / need; fit();
+  }
+  renderBackdrop();
+}
+window.addEventListener('resize', () => { if (G && SCREEN === 'game') fitGame(); else { SHRINK = 1; fit(); } });
+let SCREEN = 'title', CUR = 'mumbai';
+function show(id){
+  for (const el of $$('.screen')) el.hidden = el.id !== 'scr-' + id;
+  SCREEN = id;
+  if (id !== 'game' && SHRINK !== 1){ SHRINK = 1; fit(); }
+  if (id !== 'game') SFX.music('menu');
+  refreshMenus();
+}
+function refreshMenus(){
+  for (const el of $$('[data-wallet]')) el.textContent = fmt(S.coins);
+  if (SCREEN === 'map') renderMap();
+  if (SCREEN === 'levels') renderLevels();
+  if (SCREEN === 'shop') renderShop();
+  if (SCREEN === 'title') applySound();
+}
+function applySound(){
+  $('#t-music').textContent = S.music ? 'Music on' : 'Music off'; $('#t-music').classList.toggle('off', !S.music);
+  $('#t-sfx').textContent = S.sfx ? 'Sounds on' : 'Sounds off'; $('#t-sfx').classList.toggle('off', !S.sfx);
+}
+const totalStars = r => (S.stars[r] || []).reduce((a, b) => a + (b || 0), 0);
+const restUnlocked = r => r === 'mumbai' || (S.stars[ORDER[ORDER.indexOf(r) - 1]] || [])[7] >= 1;
+const levelUnlocked = (r, i) => i === 0 || (S.stars[r][i - 1] || 0) >= 1;
+
+function renderMap(){
+  const list = $('#rest-list'); list.innerHTML = '';
+  for (const rid of ORDER){
+    const R = REST[rid], un = restUnlocked(rid);
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'rcard' + (un ? '' : ' locked');
+    b.innerHTML = `<div class="art">${sceneSVG(rid, (S.up[rid].decor || []), 200, 'xMidYMin slice')}</div>
+      ${un ? '' : `<div class="lock">Finish ${REST[ORDER[ORDER.indexOf(rid)-1]].name} Day 8</div>`}
+      <div class="meta"><div><span class="city">${R.city}</span><h3>${R.name}</h3><p>${R.blurb}</p></div><span class="stars">${starSvg().replace('<svg','<svg width="18" height="18"')}${totalStars(rid)}/24</span></div>`;
+    b.addEventListener('click', () => { SFX.init(); if (!un){ SFX.play('nope'); b.classList.add('shake'); setTimeout(() => b.classList.remove('shake'), 400); return; } SFX.play('tap'); CUR = rid; show('levels'); });
+    list.appendChild(b);
+  }
+}
+function renderLevels(){
+  const R = REST[CUR];
+  $('#lv-title').textContent = R.name;
+  $('#lv-hero').innerHTML = sceneSVG(CUR, S.up[CUR].decor || [], 200, 'xMidYMin slice');
+  const g = $('#lv-grid'); g.innerHTML = '';
+  let firstOpen = -1;
+  LEVELS[CUR].forEach((L, i) => { if (firstOpen < 0 && levelUnlocked(CUR, i) && !(S.stars[CUR][i] >= 1)) firstOpen = i; });
+  LEVELS[CUR].forEach((L, i) => {
+    const un = levelUnlocked(CUR, i), st = S.stars[CUR][i] || 0;
+    const b = document.createElement('button'); b.type = 'button';
+    b.className = 'lvb' + (un ? '' : ' locked') + (i === firstOpen ? ' cur' : '');
+    b.innerHTML = `<span class="d">${L.rush ? 'Rush' : 'Day'}</span><span class="n">${i + 1}</span><span class="s">${[0,1,2].map(k => `<span style="opacity:${k < st ? 1 : .22}">${starSvg()}</span>`).join('')}</span>`;
+    b.setAttribute('aria-label', `Day ${i + 1}, ${st} stars${un ? '' : ', locked'}`);
+    b.addEventListener('click', () => { SFX.init(); if (!un){ SFX.play('nope'); b.classList.add('shake'); setTimeout(() => b.classList.remove('shake'), 400); return; } SFX.play('tap'); startLevel(CUR, i); });
+    g.appendChild(b);
+  });
+}
+function stationDay(rid, st){
+  for (let i = 0; i < 8; i++) if (LEVELS[rid][i].u.some(u => st.need.includes(u))) return i;
+  return 0;
+}
+function maxDayReached(rid){ let m = 0; for (let i = 0; i < 8; i++) if (levelUnlocked(rid, i)) m = i; return m; }
+function renderShop(){
+  const R = REST[CUR], U = S.up[CUR], list = $('#shop-list');
+  $('#shop-title').textContent = 'Upgrade ' + R.city;
+  const reach = maxDayReached(CUR);
+  let h = `<div class="shop-sec">Cooking stations</div>`;
+  R.stations.forEach(st => {
+    const tier = U[st.id] || 0, max = st.up.length, day = stationDay(CUR, st), avail = day <= reach;
+    const cost = R.cost.st[tier];
+    const effects = ['+1 cooking spot', 'Cooks 20% faster', st.drink ? 'Stays fresh 60% longer' : 'Burns 60% slower'];
+    const desc = tier >= max ? 'Fully upgraded' : !avail ? `Unlocks on Day ${day + 1}` : `${st.up[tier]}: ${effects[tier]}`;
+    h += row(slotArtIcon(st), st.name, desc, tier, max, tier >= max ? 'max' : avail ? cost : null, `st:${st.id}`);
+  });
+  const pt = U.plates || 0;
+  h += `<div class="shop-sec">Serving counter</div>` + row(plateArt(R.plate), R.plateUp, pt >= 2 ? 'Fully upgraded' : `Hold ${4 + pt} dishes at once (now ${3 + pt})`, pt, 2, pt >= 2 ? 'max' : R.cost.pl[pt], 'pl');
+  h += `<div class="shop-sec">Decor · customers wait longer</div>`;
+  const dec = U.decor || [];
+  R.decor.forEach((d, i) => {
+    const own = dec.includes(d.id);
+    h += row(decorIcon(d.id), d.name, own ? 'Customers wait 12% longer' : '+12% customer patience', own ? 1 : 0, 1, own ? 'max' : R.cost.dec[i], `dec:${d.id}:${i}`);
+  });
+  list.innerHTML = h;
+  for (const b of $$('.buy', list)) b.addEventListener('click', () => buy(b.dataset.k));
+  function row(icon, name, desc, tier, max, cost, key){
+    const can = typeof cost === 'number' && S.coins >= cost;
+    const btn = cost === 'max' ? `<button class="buy max" type="button" disabled>Owned</button>`
+      : cost === null ? `<button class="buy" type="button" disabled>Locked</button>`
+      : `<button class="buy" type="button" data-k="${key}" ${can ? '' : 'disabled'}>₹${fmt(cost)}</button>`;
+    return `<div class="srow"><div class="ic">${svg(icon)}</div><div class="tx"><h4>${name}</h4><p>${desc}</p>${max > 1 ? `<div class="pips">${Array.from({length:max},(_,k)=>`<i class="${k < tier ? 'on' : ''}"></i>`).join('')}</div>` : ''}</div>${btn}</div>`;
+  }
+}
+function slotArtIcon(st){ const it = st.drink || st.need.map(n => DISH[n] ? (DISH[n].base === 'pav' ? 'vada' : DISH[n].base) : n)[0]; return slotArt(st.vessel, COOK[it] ? it : null, COOK[it] ? 'ready' : null); }
+function decorIcon(id){
+  const m = { toran:`<path d="M6 30Q50 54 94 30" stroke="#5a7a2a" stroke-width="2" fill="none"/>${[10,24,38,50,62,76,90].map((x,i)=>`<circle cx="${x}" cy="${30+Math.sin(x/100*Math.PI)*20}" r="7" fill="${i%2?'#ffb703':'#fb8500'}" ${S2}/>`).join('')}<path d="M50 56q-6 14 0 24q6-10 0-24Z" fill="#3e9b4f" ${S2}/>`,
+    radio:`<path d="M30 30L44 14" ${S3}/><rect x="10" y="30" width="80" height="50" rx="10" fill="#d62828" ${S3}/><circle cx="34" cy="55" r="15" fill="#fceee0" ${S2}/><rect x="58" y="42" width="24" height="10" rx="3" fill="#ffd23f" ${S2}/><circle cx="70" cy="66" r="6" fill="#fff" ${S2}/>`,
+    lights:`<path d="M4 30Q50 60 96 30" stroke="${O}" stroke-width="2" fill="none"/>${[12,30,50,70,88].map((x,i)=>`<circle cx="${x}" cy="${36+Math.sin(x/100*Math.PI)*12}" r="7" fill="${['#ff5d8f','#ffd23f','#2ec4b6','#ff9f1c','#ff5d8f'][i]}" ${S2}/>`).join('')}`,
+    kolam:`<g transform="translate(50 50)" fill="none" stroke="${O}" stroke-width="3">${[0,1,2,3].map(i=>`<path d="M0 0q16-22 32 0q-16 22-32 0Z" transform="rotate(${i*90}) translate(4 0)"/>`).join('')}</g>${dots([[50,50],[72,72],[28,72],[72,28],[28,28]],3.5,'#e8467c')}`,
+    jasmine:`<path d="M50 4V96" stroke="#3e9b4f" stroke-width="3"/>${Array.from({length:9},(_,j)=>`<circle cx="${50+(j%2?7:-7)}" cy="${10+j*10}" r="7" fill="#fff" ${S2}/>`).join('')}`,
+    lamp:`<path d="M50 6q-8-2 0 18q8-20 0-18Z" fill="#ffb703" ${S2}/><path d="M30 26H70L64 38H36Z" fill="url(#gBrass)" ${S3}/><rect x="46" y="38" width="8" height="40" fill="url(#gBrass)" ${S2}/><path d="M28 94Q50 74 72 94Z" fill="url(#gBrass)" ${S3}/>`,
+    lanterns:`<path d="M50 2V20" ${S3}/><path d="M34 22H66L72 46L66 82H34L28 46Z" fill="url(#gBrass)" ${S3}/>${dots([[42,44],[50,44],[58,44],[46,60],[54,60]],3,'#fff6c2')}`,
+    phulkari:`<path d="M4 10H96L80 90L50 60L20 90Z" fill="#e8467c" ${S3}/><path d="M50 22L60 34L50 46L40 34Z" fill="#ffd23f" ${S2}/><path d="M28 30L34 36L28 42L22 36ZM72 30L78 36L72 42L66 36Z" fill="#2ec4b6" ${S2}/>`,
+    cooler:`<rect x="18" y="8" width="64" height="86" rx="7" fill="#c9d3da" ${S3}/><circle cx="50" cy="42" r="24" fill="#7c8a94" ${S2}/><path d="M50 42V22M50 42L66 52M50 42L34 52" stroke="#eef3f6" stroke-width="7" stroke-linecap="round"/><circle cx="50" cy="42" r="4" fill="${O}"/>`,
+  };
+  return m[id] || '';
+}
+function buy(k){
+  SFX.init();
+  const R = REST[CUR], U = S.up[CUR];
+  let cost = 0;
+  if (k.startsWith('st:')){ const id = k.slice(3), t = U[id] || 0; cost = R.cost.st[t]; if (S.coins < cost) return; U[id] = t + 1; }
+  else if (k === 'pl'){ const t = U.plates || 0; cost = R.cost.pl[t]; if (S.coins < cost) return; U.plates = t + 1; }
+  else if (k.startsWith('dec:')){ const [, id, i] = k.split(':'); cost = R.cost.dec[+i]; if (S.coins < cost) return; U.decor = [...(U.decor || []), id]; }
+  S.coins -= cost; SFX.play('buy'); persist(); refreshMenus();
+}
+
+// ---------- modal & toasts ----------
+const modal = $('#modal'), sheet = $('#sheet');
+function openModal(html){ sheet.innerHTML = html; modal.hidden = false; }
+function closeModal(){ modal.hidden = true; sheet.innerHTML = ''; }
+const fxEl = $('#fx');
+function rel(el){
+  const r = el.getBoundingClientRect(), s = stage.getBoundingClientRect();
+  return { x: (r.left - s.left) / SCALE, y: (r.top - s.top) / SCALE, w: r.width / SCALE, h: r.height / SCALE };
+}
+function floatText(el, text, cls = '', dy = 0){
+  const p = rel(el), d = document.createElement('div');
+  d.className = 'float ' + cls; d.textContent = text;
+  d.style.left = (p.x + p.w / 2) + 'px'; d.style.top = (p.y - 10 + dy) + 'px';
+  fxEl.appendChild(d); setTimeout(() => d.remove(), 1500);
+}
+function shake(el){ el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); setTimeout(() => el.classList.remove('shake'), 380); }
+function nope(el, msg){ SFX.play('nope'); shake(el); if (msg) floatText(el, msg, 'small'); }
+function fly(fromEl, toEl, html, size = 44, dur = 420){
+  const a = rel(fromEl), b = rel(toEl), d = document.createElement('div');
+  d.className = 'fly'; d.innerHTML = html;
+  d.style.width = size + 'px'; d.style.height = size + 'px';
+  d.style.left = (a.x + a.w / 2 - size / 2) + 'px'; d.style.top = (a.y + a.h / 2 - size / 2) + 'px';
+  fxEl.appendChild(d);
+  const dx = (b.x + b.w / 2) - (a.x + a.w / 2), dy = (b.y + b.h / 2) - (a.y + a.h / 2);
+  const anim = d.animate ? d.animate([
+    { transform: 'translate(0,0) scale(1)' },
+    { transform: `translate(${dx * .5}px, ${dy * .5 - 40}px) scale(1.1)`, offset: .5 },
+    { transform: `translate(${dx}px, ${dy}px) scale(.7)`, opacity: .9 }], { duration: dur, easing: 'ease-in-out' }) : null;
+  if (anim) anim.onfinish = () => d.remove(); else setTimeout(() => d.remove(), dur);
+}
+
+// ---------- level runtime ----------
+let G = null;
+function unlockedSet(rid, li){ const s = new Set(); for (let i = 0; i <= li; i++) LEVELS[rid][i].u.forEach(u => s.add(u)); return s; }
+const plateKey = p => p.base + '|' + [...p.adds].sort().join(',');
+function genOrder(r, L, un, fresh){
+  const dishes = Object.keys(DISH).filter(d => un.has(d));
+  const kMax = Math.min(L.k[1], dishes.length);
+  let k = L.k[0] + Math.floor(r() * (kMax - L.k[0] + 1));
+  k = clamp(k, 1, kMax);
+  const pool = dishes.slice().sort(() => r() - .5);
+  const freshD = pool.find(d => fresh.has(d));
+  if (freshD && r() < .55){ pool.splice(pool.indexOf(freshD), 1); pool.unshift(freshD); }
+  const items = []; let drinks = 0;
+  for (const d of pool){
+    if (items.length >= k) break;
+    const D = DISH[d];
+    if (D.drink){ if (drinks) continue; drinks++; items.push({ key: 'drink:' + D.drink, price: D.price, done: false }); continue; }
+    const adds = [...(D.req || [])];
+    for (const a of D.opt) if (un.has(a) && r() < (fresh.has(a) ? .75 : .5)) adds.push(a);
+    adds.sort();
+    items.push({ key: D.base + '|' + adds.join(','), price: D.price + adds.reduce((s, a) => s + ADD[a].p, 0), done: false });
+  }
+  return items;
+}
+function keyName(key){
+  if (key.startsWith('drink:')) return NAME[key.slice(6)];
+  const [base, a] = key.split('|'); const adds = a ? a.split(',') : [];
+  const has = x => adds.includes(x);
+  let n, skip = new Set(['vada']);
+  if (base === 'pav') n = has('vada') ? 'Vada pav' : 'Pav';
+  else if (base === 'dosa'){ n = has('masala') ? 'Masala dosa' : 'Plain dosa'; skip.add('masala'); }
+  else if (base === 'naan'){ n = has('garlic') && has('butter') ? 'Garlic butter naan' : has('garlic') ? 'Garlic naan' : has('butter') ? 'Butter naan' : 'Plain naan'; skip.add('garlic'); skip.add('butter'); }
+  else n = NAME[base];
+  const ex = adds.filter(x => !skip.has(x)).map(x => NAME[x].toLowerCase());
+  return ex.length ? n + ' + ' + ex.join(' + ') : n;
+}
+
+function startLevel(rid, li){
+  const R = REST[rid], L = LEVELS[rid][li], U = S.up[rid];
+  const un = unlockedSet(rid, li), fresh = new Set(L.u);
+  const r = mulberry32(1000 + ORDER.indexOf(rid) * 97 + li * 13);
+  const queue = [];
+  for (let i = 0; i < L.n; i++){
+    const order = genOrder(r, L, un, fresh);
+    queue.push({ look: genLook(r, rid), order, gap: 0 });
+  }
+  queue[0].order = genOrder(mulberry32(5 + li), { k:[1,1] }, un, fresh);
+  const total = queue.reduce((s, c) => s + c.order.reduce((a, o) => a + o.price, 0), 0);
+  const goals = [.5, .72, .92].map(f => Math.max(5, Math.round(total * f / 5) * 5));
+  const decorN = (U.decor || []).length;
+  const stations = R.stations.filter(st => st.need.some(n => un.has(n))).map(def => {
+    const tier = U[def.id] || 0;
+    const n = def.slots + (tier >= 1 ? 1 : 0);
+    return { def, tier, cookMul: tier >= 2 ? .8 : 1, holdMul: tier >= 3 ? 1.6 : 1, slots: Array.from({ length: n }, () => ({ item: null, state: null, t: 0, warned: false, el: null })) };
+  });
+  G = { rid, li, R, L, un, fresh, queue, goals, total, t: 0, spawned: 0, nextSpawn: 1.2, seats: [null, null, null, null], stations,
+    plates: Array.from({ length: 3 + (U.plates || 0) }, () => ({ base: null, adds: [] })),
+    earned: 0, tips: 0, served: 0, lost: 0, burnt: 0, sel: -1, trash: false, paused: true, over: false, endAt: 0,
+    patMul: (1 + .12 * decorN) * (1 - .018 * li), gapBase: (8.6 - li * .45) * (rid === 'delhi' ? 1.15 : rid === 'chennai' ? 1.06 : 1),
+    tut: li === 0, lastSizzle: -1, hintKey: '', rand: mulberry32(Date.now() & 0xffff) };
+  buildGame();
+  show('game');
+  fitGame();
+  SFX.music(R.music);
+  levelIntro();
+}
+function buildGame(){
+  const { R } = G, scr = $('#scr-game');
+  scr.className = 'screen r-' + G.rid;
+  $('#seats').innerHTML = [0,1,2,3].map(i => `<div class="seat" style="left:${i * 25}%" data-seat="${i}"></div>`).join('');
+  // plates
+  $('#plates').innerHTML = G.plates.map((p, i) => `<div class="plate empty" data-act="plate" data-arg="${i}"></div>`).join('');
+  G.plates.forEach((p, i) => renderPlate(i));
+  // stations
+  const ring = `<svg class="ring" viewBox="0 0 64 64"><circle class="bg" cx="32" cy="32" r="28"/><circle class="fg" cx="32" cy="32" r="28" stroke-dasharray="175.9" stroke-dashoffset="175.9"/></svg>`;
+  $('#stations').innerHTML = G.stations.map((st, si) => `<div class="station" data-st="${si}"><span class="lbl">${st.def.name}</span><div class="slots">${st.slots.map((s, i) =>
+    `<div class="slot v-${st.def.vessel} ${st.def.fx}" data-act="slot" data-arg="${si}:${i}"><svg class="v" viewBox="0 0 100 100" aria-hidden="true"></svg>${ring}<i class="pf p1"></i><i class="pf p2"></i><i class="pf p3"></i></div>`).join('')}</div></div>`).join('');
+  G.stations.forEach((st, si) => st.slots.forEach((sl, i) => { sl.el = $(`[data-arg="${si}:${i}"]`); sl.fg = $('.ring .fg', sl.el); renderSlot(st, sl); }));
+  // pantry
+  const srcs = R.sources.filter(s => G.un.has(s.need));
+  $('#pantry').innerHTML = srcs.map(s => `<div class="tile" data-act="src" data-arg="${s.id}"><div class="box">${svg(TILEART(s.id))}</div><span class="nm">${s.label}</span></div>`).join('')
+    + `<div class="tile trash" data-act="trash"><div class="box">${svg(TRASH)}</div><span class="nm">Bin</span></div>`;
+  $('#pantry').style.setProperty('--pc', srcs.length + 1 > 9 ? 4 : 3);
+  // hud
+  ['hs0','hs1','hs2'].forEach((id, i) => { const el = $('#' + id); el.innerHTML = starSvg(); el.classList.remove('on'); el.style.left = (G.goals[i] / (G.goals[2] * 1.08) * 100) + '%'; });
+  $('#hud-day').textContent = (G.L.rush ? 'Rush ' : 'Day ') + (G.li + 1);
+  $('#hint').hidden = !G.tut;
+  scr.classList.remove('trashing');
+  updateHud();
+}
+function renderBackdrop(){ if (!G) return; const sc = $('#scene'); const w = sc.clientWidth || 400, h = sc.clientHeight || 260; const H = Math.max(200, h); $('#backdrop').innerHTML = sceneSVG(G.rid, S.up[G.rid].decor || [], H, 'xMidYMax slice', w * H / h); }
+function levelIntro(){
+  G.paused = true;
+  const news = G.L.u;
+  const cards = news.map(u => `<div class="newcard"><div class="art">${svg(introArt(u))}</div><div><h4><em>NEW</em>${NAME[u]}</h4><p>${INTRO[u] || ''}</p></div></div>`).join('');
+  openModal(`<p class="sub">${G.R.name}</p><h2>${G.L.rush ? 'Rush hour!' : 'Day ' + (G.li + 1)}</h2>
+    <div class="goalrow">${G.goals.map((g, i) => `<div><span class="gs">${Array.from({length:i+1},()=>starSvg()).join('')}</span><b>₹${fmt(g)}</b></div>`).join('')}</div>
+    <p class="sub">${G.queue.length} customers today${G.L.rush ? ' · they come thick and fast' : ''}</p>
+    ${cards}
+    <div class="acts"><button class="btn green" type="button" id="m-go">Start the day</button></div>`);
+  $('#m-go').addEventListener('click', () => { SFX.init(); SFX.play('bell'); closeModal(); G.paused = false; G.lastFrame = performance.now(); });
+}
+
+// ---------- rendering pieces ----------
+function renderPlate(i){
+  const p = G.plates[i], el = $(`.plate[data-arg="${i}"]`);
+  el.classList.toggle('empty', !p.base);
+  el.classList.toggle('sel', G.sel === i && !!p.base);
+  el.innerHTML = svg(plateArt(G.R.plate) + (p.base ? dishInner(p.base, p.adds) : ''));
+  el.classList.toggle('match', !!p.base && !!findCustomer(plateKey(p), true));
+}
+function renderSlot(st, sl){
+  const el = sl.el;
+  el.classList.remove('cook', 'ready', 'burnt', 'warn', 'amber', 'has');
+  if (sl.state) el.classList.add(sl.state, 'has');
+  $('svg.v', el).innerHTML = slotArt(st.def.vessel, sl.item, sl.state);
+}
+function updateHud(){
+  $('#hud-earn').textContent = fmt(G.earned);
+  const gi = G.goals.findIndex(g => G.earned < g);
+  $('#hud-goal').textContent = gi < 0 ? 'All stars!' : `next ★ ₹${fmt(G.goals[gi])}`;
+  $('#hud-fill').style.width = Math.min(100, G.earned / (G.goals[2] * 1.08) * 100) + '%';
+  G.goals.forEach((g, i) => { const el = $('#hs' + i); const on = G.earned >= g; if (on && !el.classList.contains('on')){ el.classList.add('on'); SFX.play('star', i); } });
+  const waiting = G.seats.filter(c => c && c.state === 'wait').length;
+  $('#hud-left').textContent = `${G.queue.length - G.spawned + waiting} to serve`;
+}
+function refreshMatches(){ G.plates.forEach((p, i) => { const el = $(`.plate[data-arg="${i}"]`); if (el) el.classList.toggle('match', !!p.base && !!findCustomer(plateKey(p), true)); }); }
+
+// ---------- customers ----------
+function spawn(seat){
+  const q = G.queue[G.spawned++];
+  const maxP = (25 + 9 * q.order.length + G.R.bonus) * G.patMul;
+  const c = { seat, look: q.look, order: q.order, p: maxP, maxP, state: 'enter', mood: 'happy', t: 0 };
+  const host = $(`.seat[data-seat="${seat}"]`);
+  host.innerHTML = `<div class="cust enter ${c.look.kind === 'kid' ? 'kid' : ''}" data-act="cust" data-arg="${seat}">
+    <div class="body">${custSVG(c.look, 'happy')}</div>
+    <div class="bubble"><div class="order n${c.order.length}">${c.order.map((o, i) => `<div class="oi" data-i="${i}">${itemIcon(o.key)}</div>`).join('')}</div><div class="pbar"><i></i></div></div></div>`;
+  c.el = $('.cust', host); c.bodyEl = $('.body', c.el); c.bar = $('.pbar', c.el); c.barI = $('.pbar i', c.el);
+  G.seats[seat] = c;
+  requestAnimationFrame(() => requestAnimationFrame(() => c.el && c.el.classList.remove('enter')));
+  c.enterAt = G.t + .55;
+  SFX.play('bell');
+  refreshMatches();
+}
+function setMood(c, m){ if (c.mood === m) return; c.mood = m; c.bodyEl.innerHTML = custSVG(c.look, m); }
+function say(c, text){ const d = document.createElement('div'); d.className = 'say'; d.textContent = text; c.el.appendChild(d); setTimeout(() => d.remove(), 1700); }
+function findCustomer(key, peek){
+  let best = null;
+  for (const c of G.seats){
+    if (!c || c.state !== 'wait') continue;
+    if (!c.order.some(o => !o.done && o.key === key)) continue;
+    if (!best || c.p / c.maxP < best.p / best.maxP) best = c;
+  }
+  return best;
+}
+function serve(c, key, fromEl, html){
+  const idx = c.order.findIndex(o => !o.done && o.key === key);
+  c.order[idx].done = true;
+  const oi = $(`.oi[data-i="${idx}"]`, c.el);
+  fly(fromEl, oi, html, 46);
+  setTimeout(() => oi && oi.classList.add('done'), 380);
+  SFX.play('serve');
+  if (c.order.every(o => o.done)) pay(c);
+  else { c.p = Math.min(c.maxP, c.p + c.maxP * .08); }
+}
+function pay(c){
+  if (!G || c.state !== 'wait') return;
+  const price = c.order.reduce((s, o) => s + o.price, 0), ratio = c.p / c.maxP;
+  const tipF = ratio > .66 ? .2 : ratio > .33 ? .1 : 0, tip = Math.round(price * tipF);
+  G.earned += price + tip; G.tips += tip; G.served++;
+  c.state = 'leave'; c.leaveAt = G.t + 1.15;
+  setMood(c, 'joy'); c.el.classList.add('joy');
+  floatText(c.bodyEl, '+₹' + fmt(price), '', -6);
+  if (tip) setTimeout(() => G && floatText(c.bodyEl, `Tip ₹${fmt(tip)}`, 'tip', 22), 220);
+  if (G.rand() < .55) say(c, pick(G.rand, G.R.happy));
+  for (let i = 0; i < 3; i++){ const h = document.createElement('div'); const p = rel(c.bodyEl); h.className = 'heart'; h.innerHTML = svg(`<path d="M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11z" fill="#ff5d8f" stroke="${O}" stroke-width="1.6"/>`, '0 0 24 24'); h.style.left = (p.x + 20 + i * 18) + 'px'; h.style.top = (p.y + 10) + 'px'; h.style.animationDelay = (i * .12) + 's'; fxEl.appendChild(h); setTimeout(() => h.remove(), 1500); }
+  SFX.play('cash');
+  updateHud(); refreshMatches();
+}
+function walkOut(c){
+  c.el.classList.add('leave');
+  c.goneAt = G.t + .9;
+}
+
+// ---------- input ----------
+const gameEl = $('#scr-game');
+gameEl.addEventListener('pointerdown', e => {
+  if (!G || G.paused || G.over) return;
+  const t = e.target.closest('[data-act]');
+  SFX.init();
+  if (!t){ if (G.trash) setTrash(false); if (G.sel >= 0){ const o = G.sel; G.sel = -1; renderPlate(o); } return; }
+  e.preventDefault();
+  const act = t.dataset.act, arg = t.dataset.arg;
+  if (act === 'trash') return setTrash(!G.trash);
+  if (act === 'src') return onSource(arg, t);
+  if (act === 'slot'){ const [si, i] = arg.split(':').map(Number); return onSlot(G.stations[si], G.stations[si].slots[i], t); }
+  if (act === 'plate') return onPlate(+arg, t);
+  if (act === 'cust'){ const c = G.seats[+arg]; if (c && c.state === 'wait'){ const left = c.order.filter(o => !o.done).map(o => keyName(o.key)); floatText($('.bubble', c.el), left.join(', '), 'small', -14); } if (G.trash) setTrash(false); }
+});
+function setTrash(on){ G.trash = on; gameEl.classList.toggle('trashing', on); SFX.play('tap'); if (on) floatText($('.tile.trash'), 'Tap what to bin', 'small'); }
+function onSource(id, el){
+  if (G.trash) setTrash(false);
+  const src = G.R.sources.find(s => s.id === id);
+  if (src.kind === 'raw'){
+    const st = G.stations.find(s => s.def.id === src.to);
+    const sl = st.slots.find(s => !s.item);
+    if (!sl) return nope(el, `${st.def.name} is full`);
+    startCook(st, sl, id); fly(el, sl.el, svg(TILEART(id)), 40, 280);
+    SFX.play(st.def.fx === 'fry' ? 'drop' : 'plop');
+    return;
+  }
+  if (src.kind === 'base'){
+    const pi = G.plates.findIndex(p => !p.base);
+    if (pi < 0) return nope(el, 'No free plate');
+    G.plates[pi] = { base: id, adds: [] }; renderPlate(pi);
+    fly(el, $(`.plate[data-arg="${pi}"]`), svg(TILEART(id)), 40, 280);
+    SFX.play('plop'); return;
+  }
+  const pi = plateFor(id);
+  if (pi < 0){
+    const bases = Object.keys(ACCEPT).filter(b => ACCEPT[b].includes(id) && G.un.has(baseUnlockName(b)));
+    return nope(el, bases.length ? `Plate a ${NAME[bases[0]].toLowerCase()} first` : 'Nothing to add it to');
+  }
+  G.plates[pi].adds.push(id); renderPlate(pi);
+  fly(el, $(`.plate[data-arg="${pi}"]`), svg(TILEART(id)), 34, 260);
+  SFX.play('add');
+}
+const baseUnlockName = b => b === 'pav' ? 'vadapav' : b;
+function plateFor(add){
+  const cands = [];
+  G.plates.forEach((p, i) => { if (p.base && ACCEPT[p.base] && ACCEPT[p.base].includes(add) && !p.adds.includes(add)) cands.push(i); });
+  if (!cands.length) return -1;
+  if (cands.includes(G.sel)) return G.sel;
+  const wants = i => { const p = G.plates[i]; const next = [...p.adds, add];
+    return G.seats.some(c => c && c.state === 'wait' && c.order.some(o => { if (o.done) return false; const [b, a] = o.key.split('|'); if (b !== p.base) return false; const oa = a ? a.split(',') : []; return next.every(x => oa.includes(x)); })); };
+  return cands.find(wants) ?? cands[0];
+}
+function startCook(st, sl, item){ sl.item = item; sl.state = 'cook'; sl.t = 0; sl.warned = false; renderSlot(st, sl); }
+function clearSlot(st, sl){ sl.item = null; sl.state = null; sl.t = 0; renderSlot(st, sl); }
+function onSlot(st, sl, el){
+  if (G.trash){ if (sl.item){ binFrom(el, $('svg.v', el).outerHTML); if (sl.state === 'burnt') G.burnt++; clearSlot(st, sl); } setTrash(false); return; }
+  if (!sl.item){
+    if (st.def.drink){ startCook(st, sl, st.def.drink); SFX.play('pour'); return; }
+    const srcs = G.R.sources.filter(s => s.to === st.def.id && G.un.has(s.need));
+    return nope(el, srcs.length ? `Tap the ${srcs[0].label.toLowerCase()} below` : '');
+  }
+  if (sl.state === 'cook'){ shake(el); SFX.play('tap'); return; }
+  if (sl.state === 'burnt'){ G.burnt++; binFrom(el, $('svg.v', el).outerHTML); clearSlot(st, sl); return; }
+  const C = COOK[sl.item];
+  if (C.drink){
+    const key = 'drink:' + sl.item, c = findCustomer(key);
+    if (!c) return nope(el, `No one wants ${NAME[sl.item].toLowerCase()} yet`);
+    serve(c, key, el, svg(ART[sl.item]())); clearSlot(st, sl); updateHud(); return;
+  }
+  if (C.base){
+    const pi = G.plates.findIndex(p => !p.base);
+    if (pi < 0) return nope(el, 'No free plate! Serve or bin one');
+    G.plates[pi] = { base: sl.item, adds: [] };
+    fly(el, $(`.plate[data-arg="${pi}"]`), svg(dishInner(sl.item, [])), 44, 300);
+    clearSlot(st, sl); renderPlate(pi); SFX.play('plop'); return;
+  }
+  if (C.addTo){
+    const pi = plateFor(sl.item);
+    if (pi < 0) return nope(el, `Put a ${NAME[C.addTo].toLowerCase()} on a plate first`);
+    G.plates[pi].adds.push(sl.item);
+    fly(el, $(`.plate[data-arg="${pi}"]`), svg(ART[sl.item]('cooked')), 36, 280);
+    clearSlot(st, sl); renderPlate(pi); SFX.play('plop');
+  }
+}
+function onPlate(i, el){
+  const p = G.plates[i];
+  if (G.trash){ if (p.base){ binFrom(el, svg(dishInner(p.base, p.adds))); G.plates[i] = { base: null, adds: [] }; if (G.sel === i) G.sel = -1; renderPlate(i); } setTrash(false); return; }
+  if (!p.base){ SFX.play('tap'); return; }
+  const key = plateKey(p), c = findCustomer(key);
+  if (c){
+    serve(c, key, el, svg(dishInner(p.base, p.adds)));
+    G.plates[i] = { base: null, adds: [] }; if (G.sel === i) G.sel = -1; renderPlate(i); updateHud(); return;
+  }
+  const prev = G.sel; G.sel = G.sel === i ? -1 : i;
+  if (prev >= 0 && prev !== i) renderPlate(prev);
+  renderPlate(i); SFX.play('tap');
+  if (G.sel === i) floatText(el, 'Selected · toppings go here', 'small');
+}
+function binFrom(el, html){ fly(el, $('.tile.trash'), html, 40, 380); SFX.play('trash'); }
+
+// ---------- loop ----------
+function tick(dt){
+  G.t += dt;
+  // spawning
+  if (G.spawned < G.queue.length && G.t >= G.nextSpawn){
+    const free = G.seats.map((c, i) => c ? -1 : i).filter(i => i >= 0);
+    if (free.length){
+      spawn(free[Math.floor(G.rand() * free.length)]);
+      G.nextSpawn = G.t + G.gapBase * (.8 + G.rand() * .4);
+    } else G.nextSpawn = G.t + .6;
+  }
+  // stations
+  let sizzle = 0;
+  for (const st of G.stations){
+    for (const sl of st.slots){
+      if (!sl.item) continue;
+      const C = COOK[sl.item];
+      sl.t += dt;
+      if (sl.state === 'cook'){
+        const T = C.t * st.cookMul;
+        if (st.def.fx === 'fry') sizzle += .05;
+        if (sl.t >= T){ sl.state = 'ready'; sl.t = 0; renderSlot(st, sl); SFX.play('ready'); }
+        else sl.fg.style.strokeDashoffset = 175.9 * (1 - sl.t / T);
+      } else if (sl.state === 'ready'){
+        const H = C.h * st.holdMul, f = sl.t / H;
+        if (st.def.fx === 'fry') sizzle += .03;
+        sl.fg.style.strokeDashoffset = 175.9 * clamp(f, 0, 1);
+        sl.el.classList.toggle('amber', f > .45 && f <= .72);
+        if (f > .72 && !sl.warned){ sl.warned = true; sl.el.classList.add('warn'); SFX.play('warn'); }
+        if (f >= 1){ sl.state = 'burnt'; renderSlot(st, sl); SFX.play('burnt'); floatText(sl.el, C.drink ? (sl.item === 'chai' ? 'Boiled over!' : 'Gone cold!') : 'Burnt!', 'small'); }
+      }
+    }
+  }
+  sizzle = Math.min(.22, sizzle);
+  if (Math.abs(sizzle - G.lastSizzle) > .005){ G.lastSizzle = sizzle; SFX.sizzle(sizzle); }
+  // customers
+  for (let i = 0; i < 4; i++){
+    const c = G.seats[i]; if (!c) continue;
+    if (c.state === 'enter' && G.t >= c.enterAt){ c.state = 'wait'; c.el.classList.add('wait'); refreshMatches(); }
+    if (c.state === 'wait'){
+      c.p -= dt;
+      const f = clamp(c.p / c.maxP, 0, 1);
+      c.barI.style.transform = `scaleX(${f})`;
+      c.bar.classList.toggle('mid', f <= .5 && f > .25); c.bar.classList.toggle('low', f <= .25);
+      setMood(c, f > .6 ? 'happy' : f > .35 ? 'neutral' : f > .15 ? 'annoyed' : 'mad');
+      if (c.p <= 0){
+        c.state = 'leave'; c.leaveAt = G.t + .9; G.lost++; c.el.classList.add('mad');
+        say(c, pick(G.rand, G.R.mad)); SFX.play('angry'); updateHud(); refreshMatches();
+      }
+    }
+    if (c.state === 'leave' && G.t >= c.leaveAt){ c.state = 'gone'; walkOut(c); }
+    if (c.state === 'gone' && G.t >= c.goneAt){ $(`.seat[data-seat="${i}"]`).innerHTML = ''; G.seats[i] = null; updateHud(); }
+  }
+  // end
+  if (!G.over && G.spawned >= G.queue.length && G.seats.every(c => !c)){
+    if (!G.endAt) G.endAt = G.t + .8;
+    if (G.t >= G.endAt) endLevel();
+  }
+  if (G.tut) tutorial();
+}
+function tutorial(){
+  let msg = '', target = null;
+  const slots = G.stations.flatMap(st => st.slots.map(sl => ({ st, sl })));
+  const burnt = slots.find(x => x.sl.state === 'burnt');
+  const ready = slots.find(x => x.sl.state === 'ready');
+  const waiting = G.seats.filter(c => c && c.state === 'wait');
+  const matchPlate = G.plates.findIndex(p => p.base && findCustomer(plateKey(p), true));
+  if (burnt){ msg = 'Oops, burnt! Tap it to throw it away.'; target = burnt.sl.el; }
+  else if (matchPlate >= 0){ msg = 'Order ready! Tap the plate to serve it.'; target = $(`.plate[data-arg="${matchPlate}"]`); }
+  else if (ready){ msg = COOK[ready.sl.item].drink ? 'Ready! Tap it to serve.' : 'Golden! Tap it to put it on a plate before it burns.'; target = ready.sl.el; }
+  else {
+    // a plated dish that needs a topping?
+    let need = null;
+    G.plates.forEach((p, i) => { if (need || !p.base) return;
+      for (const c of waiting) for (const o of c.order){ if (o.done) continue; const [b, a] = o.key.split('|'); if (b !== p.base) continue; const oa = a ? a.split(',') : []; const miss = oa.filter(x => !p.adds.includes(x)); if (miss.length && p.adds.every(x => oa.includes(x))){ need = miss[0]; return; } } });
+    const cooking = slots.find(x => x.sl.state === 'cook');
+    if (need){ msg = `This order needs ${NAME[need].toLowerCase()}. Tap it to add.`; target = $(`.tile[data-arg="${need}"]`); }
+    else if (cooking){ msg = 'Cooking… wait for the ring to fill.'; target = null; }
+    else if (waiting.length){
+      const o = waiting[0].order.find(x => !x.done);
+      const base = o.key.startsWith('drink:') ? null : o.key.split('|')[0];
+      if (base){ msg = `Tap the ${G.R.sources.find(s => s.id === base).label.toLowerCase()} to start cooking.`; target = $(`.tile[data-arg="${base}"]`); }
+      else { msg = 'Tap an empty pot to make a drink.'; target = slots.find(x => x.st.def.drink && !x.sl.item)?.sl.el; }
+    } else msg = 'Customers are on their way…';
+  }
+  if (msg !== G.hintKey){ G.hintKey = msg; $('#hint').textContent = msg; }
+  if (G.hintEl !== target){ if (G.hintEl) G.hintEl.classList.remove('pulse'); if (target) target.classList.add('pulse'); G.hintEl = target; }
+}
+function endLevel(){
+  G.over = true; SFX.sizzle(0);
+  if (G.hintEl) G.hintEl.classList.remove('pulse');
+  const stars = G.goals.filter(g => G.earned >= g).length;
+  const { rid, li } = G;
+  const prev = S.stars[rid][li] || 0;
+  S.stars[rid][li] = Math.max(prev, stars);
+  S.best[rid][li] = Math.max(S.best[rid][li] || 0, G.earned);
+  S.coins += G.earned;
+  persist();
+  const unlockedNext = stars >= 1 && li === 7 && ORDER.indexOf(rid) < 2 && prev < 1;
+  SFX.play(stars ? 'win' : 'lose');
+  const next = stars >= 1 && li < 7;
+  openModal(`<div class="chefmini">${chefSVG(stars ? (stars === 3 ? 'wow' : 'happy') : 'sad')}</div>
+    <h2>${stars === 3 ? 'Perfect shift!' : stars ? 'Shift complete!' : 'Not quite…'}</h2>
+    <p class="sub">${G.R.name} · ${G.L.rush ? 'Rush' : 'Day'} ${li + 1}</p>
+    <div class="bigstars">${[0,1,2].map(i => `<span class="st s${i+1} ${i < stars ? 'on' : ''}" style="animation-delay:${.25 + i * .35}s">${starSvg()}</span>`).join('')}</div>
+    <div class="earned">₹${fmt(G.earned)}</div>
+    <p class="sub">${stars ? 'added to your wallet' : `Need ₹${fmt(G.goals[0])} for 1 star · earnings still kept`}</p>
+    <div class="stats"><div>Served<b>${G.served}/${G.queue.length}</b></div><div>Tips<b>₹${fmt(G.tips)}</b></div><div>Walked out<b>${G.lost}</b></div><div>Burnt / spoilt<b>${G.burnt}</b></div></div>
+    ${unlockedNext ? `<div class="newcard"><div class="art">${svg(ORDER[ORDER.indexOf(rid)+1] === 'chennai' ? dosaRoll(true) : ART.naan('cooked'))}</div><div><h4><em>UNLOCKED</em>${REST[ORDER[ORDER.indexOf(rid)+1]].name}</h4><p>A new kitchen in ${REST[ORDER[ORDER.indexOf(rid)+1]].city} is open.</p></div></div>` : ''}
+    <div class="acts row"><button class="btn alt" type="button" id="m-retry">Retry</button>${next ? `<button class="btn green" type="button" id="m-next">Next day</button>` : `<button class="btn" type="button" id="m-menu">${unlockedNext ? 'New kitchen' : 'Menu'}</button>`}</div>
+    <div class="acts shopact" style="margin-top:12px"><button class="btn alt" type="button" id="m-shop">Upgrade kitchen</button></div>`);
+  [0,1,2].forEach(i => { if (i < stars) setTimeout(() => SFX.play('star', i), 250 + i * 350); });
+  $('#m-retry').addEventListener('click', () => { closeModal(); startLevel(rid, li); });
+  if (next) $('#m-next').addEventListener('click', () => { closeModal(); startLevel(rid, li + 1); });
+  else $('#m-menu').addEventListener('click', () => { closeModal(); G = null; show(unlockedNext ? 'map' : 'levels'); });
+  $('#m-shop').addEventListener('click', () => { closeModal(); G = null; CUR = rid; show('shop'); });
+}
+function pauseGame(){
+  if (!G || G.over || G.paused) return;
+  G.paused = true; SFX.sizzle(0);
+  openModal(`<h2>Paused</h2><p class="sub">${G.R.name} · Day ${G.li + 1}</p>
+    <div class="toggles"><button class="chip ${S.music ? '' : 'off'}" type="button" id="p-music">${S.music ? 'Music on' : 'Music off'}</button><button class="chip ${S.sfx ? '' : 'off'}" type="button" id="p-sfx">${S.sfx ? 'Sounds on' : 'Sounds off'}</button></div>
+    <div class="acts"><button class="btn green" type="button" id="p-resume">Resume</button><button class="btn alt" type="button" id="p-restart">Restart day</button><button class="btn alt" type="button" id="p-quit">Quit to menu</button></div>`);
+  $('#p-resume').addEventListener('click', () => { closeModal(); G.paused = false; G.lastSizzle = -1; });
+  $('#p-restart').addEventListener('click', () => { closeModal(); startLevel(G.rid, G.li); });
+  $('#p-quit').addEventListener('click', () => { closeModal(); const r = G.rid; G = null; SFX.sizzle(0); CUR = r; show('levels'); });
+  $('#p-music').addEventListener('click', e => { toggleMusic(); e.target.textContent = S.music ? 'Music on' : 'Music off'; e.target.classList.toggle('off', !S.music); });
+  $('#p-sfx').addEventListener('click', e => { toggleSfx(); e.target.textContent = S.sfx ? 'Sounds on' : 'Sounds off'; e.target.classList.toggle('off', !S.sfx); });
+}
+function toggleMusic(){ SFX.init(); S.music = !S.music; SFX.setMusic(S.music); persist(); applySound(); }
+function toggleSfx(){ SFX.init(); S.sfx = !S.sfx; SFX.setSfx(S.sfx); if (!S.sfx) SFX.sizzle(0); persist(); applySound(); }
+
+let last = performance.now();
+function frame(now){
+  const dt = Math.min(.1, (now - last) / 1000); last = now;
+  if (G && !G.paused && !G.over && SCREEN === 'game'){
+    try { tick(dt); } catch (err) { console.error(err); }
+  }
+  requestAnimationFrame(frame);
+}
+
+// ---------- wiring ----------
+$('#bunt1').innerHTML = bunting(); $('#bunt2').innerHTML = bunting();
+$('#chef-hero').innerHTML = chefSVG('happy');
+for (const el of $$('[data-coin]')) el.innerHTML = COIN;
+$('#btn-play').addEventListener('click', () => { SFX.init(); SFX.play('tap'); SFX.music('menu'); show('map'); });
+$('#t-music').addEventListener('click', toggleMusic);
+$('#t-sfx').addEventListener('click', toggleSfx);
+$('#t-save').addEventListener('click', () => { SFX.init(); SFX.play('tap'); saveCodeModal(); });
+// ---------- save codes: move progress between devices ----------
+function encodeSave(){
+  const json = JSON.stringify({ v: 1, c: S.coins, s: S.stars, b: S.best, u: S.up });
+  return 'MASALA1-' + btoa(unescape(encodeURIComponent(json)));
+}
+function decodeSave(code){
+  const t = (code || '').replace(/\s+/g, '');
+  if (!t.startsWith('MASALA1-')) throw new Error('That doesn\u2019t look like a Masala Rush save code.');
+  let d;
+  try { d = JSON.parse(decodeURIComponent(escape(atob(t.slice(8))))); } catch (e) { throw new Error('The code is incomplete. Copy the whole code and try again.'); }
+  return mergeSave({ coins: d.c, stars: d.s, best: d.b, up: d.u, music: S.music, sfx: S.sfx });
+}
+function saveCodeModal(){
+  const code = encodeSave();
+  openModal(`<h2>Save code</h2><p class="sub">Move your progress to another phone, iPad or the Home Screen app.</p>
+    <span class="lbl2">Your code</span><textarea class="code" id="sc-out" readonly aria-label="Your save code">${code}</textarea>
+    <div class="acts"><button class="btn" type="button" id="sc-copy">Copy my code</button></div>
+    <p class="msg" id="sc-msg1"></p>
+    <span class="lbl2">Load a code from another device</span><textarea class="code" id="sc-in" placeholder="Paste a save code here" aria-label="Paste a save code"></textarea>
+    <div class="acts"><button class="btn alt" type="button" id="sc-load">Load code</button></div>
+    <p class="msg" id="sc-msg2"></p>
+    <div class="acts"><button class="btn alt" type="button" id="sc-close">Close</button></div>`);
+  const out = $('#sc-out'), m1 = $('#sc-msg1'), m2 = $('#sc-msg2');
+  const selectOut = () => { out.focus(); out.select(); out.setSelectionRange(0, code.length); };
+  $('#sc-copy').addEventListener('click', () => {
+    const ok = () => { m1.className = 'msg ok'; m1.textContent = 'Copied! Paste it into Masala Rush on your other device.'; };
+    const fail = () => { selectOut(); m1.className = 'msg'; m1.textContent = 'The code is selected. Tap Copy in the menu to copy it.'; };
+    try { navigator.clipboard.writeText(code).then(ok, fail); } catch (e) { fail(); }
+  });
+  let armed = null;
+  $('#sc-load').addEventListener('click', e => {
+    let next;
+    try { next = decodeSave($('#sc-in').value); } catch (err) { m2.className = 'msg bad'; m2.textContent = err.message; armed = null; e.target.textContent = 'Load code'; return; }
+    const stars = ORDER.reduce((a, r) => a + next.stars[r].reduce((x, y) => x + (y || 0), 0), 0);
+    if (armed !== $('#sc-in').value){
+      armed = $('#sc-in').value; e.target.textContent = 'Replace my progress';
+      m2.className = 'msg'; m2.textContent = `This code has ${stars} stars and \u20b9${fmt(next.coins)}. It replaces the progress on this device. Tap again to confirm.`;
+      return;
+    }
+    S = next; persist(); SFX.play('buy');
+    m2.className = 'msg ok'; m2.textContent = 'Progress loaded!'; e.target.textContent = 'Loaded'; armed = null;
+    refreshMenus();
+  });
+  $('#sc-close').addEventListener('click', closeModal);
+}
+$('#btn-shop').addEventListener('click', () => { SFX.init(); SFX.play('tap'); show('shop'); });
+$('#btn-pause').addEventListener('click', pauseGame);
+for (const b of $$('[data-nav]')) b.addEventListener('click', () => { SFX.init(); SFX.play('tap'); show(b.dataset.nav); });
+document.addEventListener('visibilitychange', () => { if (document.hidden){ pauseGame(); SFX.suspend(); } else SFX.resume(); });
+document.addEventListener('touchmove', e => { if (!e.target.closest('.scroll, .sheet')) e.preventDefault(); }, { passive: false });
+document.addEventListener('touchend', () => SFX.init(), { passive: true });
+document.addEventListener('gesturestart', e => e.preventDefault());
+
+loadLocal();
+applySound();
+fit();
+show('title');
+requestAnimationFrame(frame);
+setTimeout(initCloud, 0);
+</script>
+
+<script>
+// ---- Home Screen app extras: offline cache, durable storage, install hint ----
+if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+(function(){
+  const standalone = navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches;
+  if (standalone) return;
+  let dismissed = false; try { dismissed = localStorage.getItem('mr-install-hint') === 'hidden'; } catch (e) {}
+  if (dismissed) return;
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const share = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5" fill="none" stroke="#0a7aff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 11H6v10h12V11h-2" fill="none" stroke="#0a7aff" stroke-width="2.2" stroke-linejoin="round"/></svg>';
+  const bar = document.createElement('div'); bar.className = 'a2hs';
+  const close = () => { bar.remove(); try { localStorage.setItem('mr-install-hint', 'hidden'); } catch (e) {} };
+  if (ios){
+    bar.innerHTML = `<span>Install it: tap Share ${share} then <b>Add to Home Screen</b>. It works offline after that.</span><button class="x" type="button" aria-label="Hide">×</button>`;
+    document.getElementById('scr-title').appendChild(bar);
+    bar.querySelector('.x').addEventListener('click', close);
+  } else {
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      bar.innerHTML = `<span>Install Masala Rush on this device so it works offline.</span><button class="go" type="button">Install</button><button class="x" type="button" aria-label="Hide">×</button>`;
+      document.getElementById('scr-title').appendChild(bar);
+      bar.querySelector('.x').addEventListener('click', close);
+      bar.querySelector('.go').addEventListener('click', () => { e.prompt(); e.userChoice.finally(() => bar.remove()); });
+    });
+  }
+})();
+</script>
+</body>
+</html>
