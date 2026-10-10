@@ -1847,7 +1847,11 @@ try { if (navigator.storage && navigator.storage.persist) navigator.storage.pers
   const bar = document.createElement('div'); bar.className = 'a2hs';
   const close = () => { bar.remove(); try { localStorage.setItem('mr-install-hint', 'hidden'); } catch (e) {} };
   if (ios){
-    bar.innerHTML = `<span>Install it: tap Share ${share} then <b>Add to Home Screen</b>. It works offline after that.</span><button class="x" type="button" aria-label="Hide">×</button>`;
+    const otherIos = /crios|fxios|edgios/i.test(navigator.userAgent);
+    const how = otherIos
+      ? `Install it: tap the Share icon ${share} in the address bar, then <b>Add to Home Screen</b>.`
+      : `Install it: tap Share ${share} then <b>Add to Home Screen</b>.`;
+    bar.innerHTML = `<span>${how} It works offline after that.</span><button class="x" type="button" aria-label="Hide">×</button>`;
     document.getElementById('scr-title').appendChild(bar);
     bar.querySelector('.x').addEventListener('click', close);
   } else {
