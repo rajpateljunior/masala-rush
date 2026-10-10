@@ -1,5 +1,5 @@
 // Masala Rush offline cache. The version changes whenever any game file changes.
-const CACHE = 'masala-rush-d8c9ac2a77';
+const CACHE = 'masala-rush-9891bec6f5';
 const ASSETS = ["./", "index.html", "manifest.webmanifest", "icons/favicon-64.png", "icons/icon-180.png", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "fonts/baloo-2-latin-wght-normal.woff2", "fonts/baloo-2-latin-ext-wght-normal.woff2", "fonts/baloo-2-devanagari-wght-normal.woff2", "fonts/baloo-thambi-2-latin-wght-normal.woff2", "fonts/baloo-thambi-2-tamil-wght-normal.woff2"];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
