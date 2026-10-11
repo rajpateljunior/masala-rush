@@ -39,7 +39,13 @@ Live: https://rajpateljunior.github.io/masala-rush/ · Repo: `rajpateljunior/mas
 3. If a file is added, add it to `ASSETS` in `sw.js`.
 4. Keep save loading backward compatible. Update this file.
 
+## Rotation / layout fitting
+- `fit()` scales the 400-wide stage to `#app`. `refit()` (just below `fitGame()`) calls it, and is triggered by `resize`, `orientationchange`, `visualViewport` resize, a `ResizeObserver` on `#app`, `pageshow` and `visibilitychange`, plus re-checks at 60/200/450/900 ms after any of those.
+- Why: on iOS the `resize` event can fire before rotation has settled, leaving the previous orientation's layout (cut-off display). Fixed 2026-10-11. Do not go back to a single `resize` listener.
+- Test: Playwright at iPhone SE/14/Pro Max, iPad mini/Air and desktop, rotating portrait/landscape/portrait/landscape mid-level, with resize events suppressed to mimic the iOS race. Checks that stage, hud, scene, counter, stations and pantry all sit inside `#app`. Test script is not checked in.
+
 ## Known issues / untested
+- Rotation fix verified in headless Chromium only, not on a real iPhone/iPad (the real iOS timing could not be reproduced exactly).
 - Not verified on a real iPhone by this session: touch feel, iOS audio, install flow. (Last commit message says the install hint was corrected for Chrome/Firefox/Edge on iOS as well as Safari; I did not re-test that.)
 - Cloud sync only works inside Claude and has not been exercised from here.
 - No balance bot or simulation exists in this repo, so level difficulty and economy have not been checked here.

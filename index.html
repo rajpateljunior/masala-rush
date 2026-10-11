@@ -1195,7 +1195,27 @@ function fitGame(){
   }
   renderBackdrop();
 }
-window.addEventListener('resize', () => { if (G && SCREEN === 'game') fitGame(); else { SHRINK = 1; fit(); } });
+// Re-measure after any size change. iOS fires `resize`/`orientationchange` BEFORE the rotation has settled, so the
+// first measurement can still be the old orientation (that is what clipped the layout). We therefore re-measure on
+// several signals, and again a few times shortly after, and only act when the measured size really changed.
+let LASTW = 0, LASTH = 0, REFIT_T = [];
+function refit(force){
+  const W = app.clientWidth, H = app.clientHeight;
+  if (!force && W === LASTW && H === LASTH) return;
+  LASTW = W; LASTH = H;
+  if (G && SCREEN === 'game') fitGame(); else { SHRINK = 1; fit(); }
+}
+function refitSoon(){
+  refit();
+  REFIT_T.forEach(clearTimeout);
+  REFIT_T = [60, 200, 450, 900].map(ms => setTimeout(refit, ms));
+}
+window.addEventListener('resize', refitSoon);
+window.addEventListener('orientationchange', refitSoon);
+window.addEventListener('pageshow', () => refit(true));
+document.addEventListener('visibilitychange', () => { if (!document.hidden) refitSoon(); });
+if (window.visualViewport) window.visualViewport.addEventListener('resize', refitSoon);
+if (window.ResizeObserver) new ResizeObserver(() => refit()).observe(app);
 let SCREEN = 'title', CUR = 'mumbai';
 function show(id){
   for (const el of $$('.screen')) el.hidden = el.id !== 'scr-' + id;
