@@ -13,6 +13,7 @@ Live: https://rajpateljunior.github.io/masala-rush/ · Repo: `rajpateljunior/mas
 - Progression: level N unlocks after earning at least 1 star on level N-1. The next restaurant unlocks after at least 1 star on level 8 of the previous one.
 - Per restaurant upgrades: stations (3 tiers), plates (2 tiers), decor (3 tiers). Costs are in `REST[...].cost`.
 - Offline-first PWA, no external art or audio files.
+- Name is "Masala Rush!" (with the exclamation mark) in the page title, manifest and iOS home-screen title. App icon: smiling samosa in a chef hat on a pink sunburst (2026-11-20); the PNGs in `icons/` are rendered from an SVG, which is not checked in.
 
 ## Architecture
 - Single `index.html` (~150 KB) with inline CSS and two `<script>` blocks. **No `src/` folder and no build script in this repo**: edit `index.html` directly.
